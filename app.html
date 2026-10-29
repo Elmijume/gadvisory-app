@@ -498,6 +498,12 @@ img { max-width: 100%; }
             <button id="lang-en-btn" class="lang-btn active" onclick="setReportLang('en',this)">🇬🇧 English</button>
             <button id="lang-es-btn" class="lang-btn" onclick="setReportLang('es',this)">🇪🇸 Español</button>
           </div>
+          <div style="margin-bottom:12px">
+            <label style="font-size:13px;font-weight:500;color:var(--text2);display:block;margin-bottom:6px">Visita a exportar:</label>
+            <select id="report-visit-select" style="width:100%">
+              <option value="">Cargando visitas...</option>
+            </select>
+          </div>
           <button class="btn btn-primary btn-full" onclick="generateWordReport()">📄 Generar Informe de Visita (.html)</button>
           <div class="mt-8" style="height:1px;background:var(--border)"></div>
           <p style="color:var(--text2);font-size:13px;margin:12px 0 8px">Exportar / Importar datos del proyecto:</p>
@@ -1047,12 +1053,16 @@ function loadVisitsList(visitas){
   const sorted = [...visitas].sort((a,b)=> new Date(b.fecha)-new Date(a.fecha));
   el.innerHTML = sorted.map(v=>`
     <div class="visit-item" onclick="openVisit('${v.id}')">
-      <div>
+      <div style="flex:1;min-width:0">
         <div class="visit-date">${formatDate(v.fecha)}</div>
         <div class="visit-meta">${v.hora||''} ${v.asistentes?'· '+esc(v.asistentes).slice(0,35):''}</div>
       </div>
-      <div class="visit-status">
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
         <span class="badge ${v.estado==='cerrada'?'badge-closed':'badge-active'}">${v.estado==='cerrada'?'Cerrada':'Borrador'}</span>
+        <button onclick="event.stopPropagation();generateWordReportForVisit('${v.id}')" title="Generar informe de esta visita"
+          style="background:var(--gd);color:#fff;border-radius:8px;padding:5px 10px;font-size:13px;font-weight:600;white-space:nowrap">
+          📄 Informe
+        </button>
       </div>
     </div>
   `).join('');
@@ -1062,6 +1072,16 @@ function showProjTab(tab, btn){
   ['info','visits','export'].forEach(t=>document.getElementById('tab-'+t).hidden = t!==tab);
   document.querySelectorAll('#screen-project .tab-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
+  if(tab==='export') populateReportVisitSelect();
+}
+
+async function populateReportVisitSelect(){
+  const sel = document.getElementById('report-visit-select');
+  if(!sel) return;
+  const visitas = await dbGetByIndex('visitas','proyectoId',currentProjectId);
+  if(!visitas.length){ sel.innerHTML='<option value="">Sin visitas disponibles</option>'; return; }
+  const sorted = [...visitas].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  sel.innerHTML = sorted.map(v=>`<option value="${v.id}">${formatDate(v.fecha)}${v.hora?' · '+v.hora:''} — ${v.estado==='cerrada'?'Cerrada':'Borrador'}</option>`).join('');
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -1415,11 +1435,26 @@ function rptTable(headers, rows){
   return t;
 }
 
+async function generateWordReportForVisit(visitId){
+  const p = await dbGet('projects', currentProjectId);
+  const v = await dbGet('visitas', visitId);
+  if(!v){ toast('Visita no encontrada'); return; }
+  await _buildAndShowReport(p, v);
+}
+
 async function generateWordReport(){
   const p = await dbGet('projects', currentProjectId);
   const visitas = await dbGetByIndex('visitas','proyectoId',currentProjectId);
   if(!visitas.length){ toast('No hay visitas para el informe'); return; }
-  const v = visitas.sort((a,b)=>new Date(b.fecha)-new Date(a.fecha))[0];
+  const sel = document.getElementById('report-visit-select');
+  const selectedId = sel ? sel.value : '';
+  const v = selectedId
+    ? visitas.find(x=>x.id===selectedId) || visitas.sort((a,b)=>new Date(b.fecha)-new Date(a.fecha))[0]
+    : visitas.sort((a,b)=>new Date(b.fecha)-new Date(a.fecha))[0];
+  await _buildAndShowReport(p, v);
+}
+
+async function _buildAndShowReport(p, v){
   const h = p.hitos||{};
   const lang = reportLang;
   const isEN = lang === 'en';
