@@ -1,0 +1,1943 @@
+<title>G-Advisory Obra</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="manifest" href="data:application/json,{}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="G-Advisory">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap">
+
+<style>
+/* ── TOKENS ──────────────────────────────────────────────────────── */
+:root {
+  --gd: #16968D;        /* durante visita */
+  --gm: #61BCA4;        /* pre-visita */
+  --gl: #C8E6D8;
+  --gp: #EEF7F2;
+  --header: #1A3530;
+  --pre: #61BCA4;
+  --vis: #16968D;
+  --bg: #F2F5F4;
+  --surface: #FFFFFF;
+  --surface2: #F7FAF8;
+  --border: #D8E5DF;
+  --text: #1C2B27;
+  --text2: #4A6359;
+  --text3: #7A9E91;
+  --danger: #C0392B;
+  --warn: #D4820A;
+  --shadow: 0 1px 4px rgba(22,50,44,.08), 0 4px 16px rgba(22,50,44,.05);
+  --r: 12px;
+  --r-sm: 8px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1E1A;
+    --surface: #172820;
+    --surface2: #1E3329;
+    --border: #2A4038;
+    --text: #E8F2EE;
+    --text2: #8DBFAD;
+    --text3: #5A8B78;
+    --gp: #152820;
+    --gl: #1E3A2C;
+    --shadow: 0 1px 4px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.2);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1E1A; --surface: #172820; --surface2: #1E3329;
+  --border: #2A4038; --text: #E8F2EE; --text2: #8DBFAD;
+  --text3: #5A8B78; --gp: #152820; --gl: #1E3A2C;
+  --shadow: 0 1px 4px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.2);
+  color-scheme: dark;
+}
+
+/* ── RESET / BASE ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg); color: var(--text);
+  font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: max(72px, calc(56px + env(safe-area-inset-bottom,0px)));
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select {
+  font-family: inherit; font-size: 14px; color: var(--text);
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-sm); padding: 8px 12px;
+  width: 100%; outline: none; transition: border-color .15s;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--gd); }
+textarea { resize: vertical; min-height: 72px; }
+select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A9E91' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+h1,h2,h3,h4 { margin: 0; font-weight: 600; text-wrap: balance; }
+p { margin: 0; }
+img { max-width: 100%; }
+
+/* ── SCREENS ─────────────────────────────────────────────────────── */
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ── HEADER ──────────────────────────────────────────────────────── */
+.app-header {
+  background: var(--header);
+  padding: 0 max(16px, env(safe-area-inset-left,0px));
+  padding-top: env(safe-area-inset-top,0px);
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 12px;
+  min-height: calc(56px + env(safe-area-inset-top,0px));
+}
+.header-logo { width: 28px; height: 28px; }
+.header-title { color: #fff; font-size: 16px; font-weight: 600; flex: 1; }
+.header-sub { color: rgba(255,255,255,.6); font-size: 12px; }
+.header-back {
+  color: rgba(255,255,255,.9); font-size: 14px; font-weight: 500;
+  padding: 8px 4px; display: flex; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  white-space: nowrap; flex-shrink: 0;
+}
+.lang-btn {
+  padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  border: 1.5px solid var(--border); color: var(--text2); background: var(--surface);
+  cursor: pointer; transition: all .15s;
+}
+.lang-btn.active { background: var(--gd); color: #fff; border-color: var(--gd); }
+.header-back svg { opacity: .7; }
+.header-btn {
+  color: #fff; background: rgba(255,255,255,.12); border-radius: 8px;
+  padding: 6px 12px; font-size: 13px; font-weight: 500;
+}
+.header-btn:active { background: rgba(255,255,255,.2); }
+
+/* ── MAIN CONTENT ────────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  padding: 16px max(16px, env(safe-area-inset-right,0px)) 16px max(16px, env(safe-area-inset-left,0px));
+}
+
+/* ── CARDS ───────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface); border-radius: var(--r);
+  box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden;
+}
+.card-header {
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.card-body { padding: 14px 16px; }
+
+/* ── PROJECT LIST ─────────────────────────────────────────────────── */
+.project-item {
+  background: var(--surface); border-radius: var(--r);
+  box-shadow: var(--shadow); padding: 14px 16px;
+  margin-bottom: 10px; cursor: pointer;
+  display: flex; align-items: center; gap: 12px;
+  transition: transform .1s, box-shadow .1s;
+  border-left: 4px solid var(--gm);
+}
+.project-item:active { transform: scale(.98); }
+.project-item-body { flex: 1; min-width: 0; }
+.project-item-name { font-weight: 600; font-size: 15px; }
+.project-item-meta { color: var(--text2); font-size: 12px; margin-top: 2px; }
+.project-item-arrow { color: var(--text3); }
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; letter-spacing: .03em;
+}
+.badge-active { background: var(--gl); color: var(--gd); }
+.badge-closed { background: #EEE; color: #888; }
+
+/* ── FAB ─────────────────────────────────────────────────────────── */
+.fab {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right,0px));
+  bottom: calc(max(72px, calc(56px + env(safe-area-inset-bottom,0px))) + 12px);
+  width: 56px; height: 56px; border-radius: 28px;
+  background: var(--gd); color: #fff; font-size: 28px; font-weight: 300;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(22,150,141,.35);
+  z-index: 40; transition: transform .1s;
+}
+.fab:active { transform: scale(.93); }
+
+/* ── BOTTOM NAV ──────────────────────────────────────────────────── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom,0px);
+  padding-left: env(safe-area-inset-left,0px);
+  padding-right: env(safe-area-inset-right,0px);
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; padding: 10px 4px 8px;
+  color: var(--text3); font-size: 10px; font-weight: 500; gap: 3px;
+  transition: color .15s;
+}
+.nav-item.active { color: var(--gd); }
+.nav-icon { font-size: 20px; line-height: 1; }
+
+/* ── PROJECT DETAIL TABS ─────────────────────────────────────────── */
+.tab-bar {
+  display: flex; border-bottom: 2px solid var(--border);
+  background: var(--surface); position: sticky; top: calc(56px + env(safe-area-inset-top,0px)); z-index: 30;
+}
+.tab-btn {
+  flex: 1; padding: 12px 4px; font-size: 12px; font-weight: 600;
+  color: var(--text3); border-bottom: 2px solid transparent;
+  margin-bottom: -2px; letter-spacing: .02em; transition: color .15s;
+}
+.tab-btn.active { color: var(--gd); border-bottom-color: var(--gd); }
+
+/* ── FORM SECTION / ACCORDION ────────────────────────────────────── */
+.section {
+  background: var(--surface); border-radius: var(--r);
+  box-shadow: var(--shadow); margin-bottom: 10px; overflow: hidden;
+}
+.section-header {
+  padding: 13px 16px; cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.dot-pre { background: var(--pre); }
+.dot-vis { background: var(--vis); }
+.section-title { flex: 1; font-weight: 600; font-size: 14px; }
+.section-arrow { color: var(--text3); transition: transform .2s; font-size: 12px; }
+.section-arrow.open { transform: rotate(90deg); }
+.section-body { padding: 0 16px 14px; }
+.section-body.hidden { display: none; }
+
+/* ── FORM FIELDS ─────────────────────────────────────────────────── */
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field-label {
+  font-size: 12px; font-weight: 600; color: var(--text2);
+  letter-spacing: .04em; text-transform: uppercase; margin-bottom: 5px; display: block;
+}
+.field-row { display: flex; gap: 8px; }
+.field-row .field { flex: 1; margin-bottom: 0; }
+.field-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+/* ── MINI TABLE ──────────────────────────────────────────────────── */
+.mini-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+.mini-table th {
+  text-align: left; font-size: 10px; font-weight: 600; letter-spacing: .04em;
+  color: var(--text3); text-transform: uppercase; padding: 4px 6px;
+  border-bottom: 1px solid var(--border);
+}
+.mini-table td { padding: 5px 4px; vertical-align: middle; }
+.mini-table tr:nth-child(even) td { background: var(--surface2); }
+.mini-table input, .mini-table select { padding: 4px 6px; font-size: 13px; border-radius: 5px; }
+.mini-table input[type=number] { width: 64px; }
+
+/* ── PROGRESS BAR ────────────────────────────────────────────────── */
+.progress-bar {
+  height: 4px; border-radius: 2px; background: var(--gl);
+  overflow: hidden; margin-top: 2px;
+}
+.progress-fill { height: 100%; background: var(--gd); border-radius: 2px; transition: width .3s; }
+
+/* ── PHOTO GRID ──────────────────────────────────────────────────── */
+.photo-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px;
+}
+.photo-thumb {
+  aspect-ratio: 1; border-radius: 8px; overflow: hidden;
+  background: var(--surface2); border: 1px solid var(--border);
+  position: relative;
+}
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.photo-add {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text3); gap: 2px; font-size: 10px; font-weight: 500;
+}
+.photo-add-icon { font-size: 26px; }
+.photo-del {
+  position: absolute; top: 3px; right: 3px; width: 20px; height: 20px;
+  border-radius: 10px; background: rgba(0,0,0,.55); color: #fff;
+  font-size: 14px; display: flex; align-items: center; justify-content: center;
+}
+
+/* ── VISIT LIST ──────────────────────────────────────────────────── */
+.visit-item {
+  background: var(--surface); border-radius: var(--r);
+  box-shadow: var(--shadow); padding: 13px 16px;
+  margin-bottom: 8px; cursor: pointer;
+  display: flex; align-items: center; gap: 12px;
+}
+.visit-date { font-weight: 600; font-size: 16px; }
+.visit-meta { color: var(--text2); font-size: 12px; }
+.visit-status { margin-left: auto; }
+
+/* ── MODAL / SHEET ───────────────────────────────────────────────── */
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  z-index: 100; display: flex; align-items: flex-end; padding: 0;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.modal-bg.visible { opacity: 1; pointer-events: all; }
+.modal-sheet {
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  width: 100%; padding: 0 0 env(safe-area-inset-bottom,16px);
+  transform: translateY(40px); transition: transform .25s;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-bg.visible .modal-sheet { transform: translateY(0); }
+.modal-handle {
+  width: 36px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 12px auto 0;
+}
+.modal-title { font-size: 17px; font-weight: 700; padding: 16px 20px 8px; }
+.modal-body { padding: 0 20px 20px; }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  color: var(--text3); font-size: 20px; padding: 4px;
+}
+
+/* ── CHIP TAGS ───────────────────────────────────────────────────── */
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip {
+  background: var(--gp); color: var(--gd); border-radius: 20px;
+  padding: 3px 10px; font-size: 12px; font-weight: 500;
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────────────── */
+.empty { text-align: center; padding: 48px 16px; color: var(--text3); }
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-title { font-size: 17px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+
+/* ── TOAST ───────────────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: calc(max(72px, calc(56px + env(safe-area-inset-bottom,0px))) + 12px);
+  left: max(16px, env(safe-area-inset-left,0px));
+  right: max(16px, env(safe-area-inset-right,0px));
+  background: var(--header); color: #fff; border-radius: 12px;
+  padding: 12px 16px; font-size: 14px; z-index: 200;
+  transform: translateY(20px); opacity: 0; pointer-events: none;
+  transition: all .25s;
+}
+.toast.visible { transform: translateY(0); opacity: 1; }
+
+/* ── STAT ROW ────────────────────────────────────────────────────── */
+.stat-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.stat-box {
+  flex: 1; background: var(--gp); border-radius: var(--r-sm);
+  padding: 10px 12px; text-align: center;
+}
+.stat-val { font-size: 22px; font-weight: 700; color: var(--gd); }
+.stat-lbl { font-size: 10px; font-weight: 600; color: var(--text2); letter-spacing: .04em; text-transform: uppercase; }
+
+/* ── CONCLUSION BLOCK ────────────────────────────────────────────── */
+.concl-block {
+  border-left: 3px solid var(--vis);
+  padding-left: 12px; margin-bottom: 10px;
+}
+
+/* ── BTN ─────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 18px; border-radius: var(--r-sm); font-size: 14px; font-weight: 600;
+  transition: opacity .15s; cursor: pointer; text-decoration: none;
+}
+.btn-primary { background: var(--gd); color: #fff; }
+.btn-secondary { background: var(--gl); color: var(--gd); }
+.btn-danger { background: #FDECEA; color: var(--danger); }
+.btn:active { opacity: .75; }
+.btn-full { display: flex; width: 100%; justify-content: center; }
+
+/* ── INLINE SECTION STRIPE ───────────────────────────────────────── */
+.stripe-pre { background: linear-gradient(135deg, #EFF9F5 0%, #E3F5EF 100%); }
+.stripe-vis { background: linear-gradient(135deg, #E8F6F5 0%, #DAF0EE 100%); }
+
+/* ── HORIZONTAL DIVIDER ──────────────────────────────────────────── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+/* ── UTIL ────────────────────────────────────────────────────────── */
+.flex { display: flex; } .items-center { align-items: center; }
+.gap-8 { gap: 8px; } .gap-12 { gap: 12px; }
+.mt-8 { margin-top: 8px; } .mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; }
+.text-sm { font-size: 12px; } .text-xs { font-size: 11px; }
+.text-muted { color: var(--text3); } .font-semibold { font-weight: 600; }
+.overflow-x { overflow-x: auto; }
+</style>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗ -->
+<!-- ║  SCREEN: PROYECTOS                                           ║ -->
+<!-- ╚══════════════════════════════════════════════════════════════╝ -->
+<div class="screen active" id="screen-projects">
+  <header class="app-header">
+    <svg class="header-logo" viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="7" fill="#61BCA4"/>
+      <path d="M7 14h14M14 7v14" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="header-title">G-Advisory Obra</div>
+      <div class="header-sub">Control de construcción PV</div>
+    </div>
+    <button class="header-btn" onclick="openThemeToggle()">☀︎</button>
+  </header>
+
+  <div class="content" id="projects-list">
+    <!-- populated by JS -->
+  </div>
+
+  <button class="fab" id="fab-add-project" onclick="openNewProjectModal()">＋</button>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗ -->
+<!-- ║  SCREEN: PROYECTO DETALLE                                   ║ -->
+<!-- ╚══════════════════════════════════════════════════════════════╝ -->
+<div class="screen" id="screen-project">
+  <header class="app-header">
+    <button class="header-back" onclick="goBack()">
+      <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M7 1L1 6.5 7 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Proyectos
+    </button>
+    <div style="flex:1;text-align:center">
+      <div class="header-title" id="proj-header-name"></div>
+    </div>
+    <button class="header-btn" onclick="exportProject()">↑ JSON</button>
+  </header>
+
+  <!-- Project summary card -->
+  <div style="background:var(--header);padding:0 max(16px,env(safe-area-inset-left,0px)) 20px" id="proj-summary">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showProjTab('info',this)">PROYECTO</button>
+    <button class="tab-btn" onclick="showProjTab('visits',this)">VISITAS</button>
+    <button class="tab-btn" onclick="showProjTab('export',this)">EXPORTAR</button>
+  </div>
+
+  <div class="content">
+    <!-- TAB: INFO -->
+    <div id="tab-info">
+      <div class="card">
+        <div class="card-header">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Datos Generales</div>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Potencia Pico</label><input id="pi-potPico" placeholder="125 MWp" oninput="saveProjField('potenciaPico',this.value)"></div>
+            <div class="field"><label class="field-label">Potencia Nominal</label><input id="pi-potNom" placeholder="100 MW" oninput="saveProjField('potenciaNominal',this.value)"></div>
+          </div>
+          <div class="field-row mt-8">
+            <div class="field"><label class="field-label">Capacidad POI</label><input id="pi-poi" placeholder="100 MW" oninput="saveProjField('capacidadPOI',this.value)"></div>
+            <div class="field"><label class="field-label">Localización</label><input id="pi-loc" placeholder="Burgos" oninput="saveProjField('localizacion',this.value)"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Módulos e Inversores</div>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Fab. Módulos</label><input id="pi-modFab" oninput="saveProjNested('modulos','fabricante',this.value)"></div>
+            <div class="field"><label class="field-label">Modelo</label><input id="pi-modMod" oninput="saveProjNested('modulos','modelo',this.value)"></div>
+          </div>
+          <div class="field mt-8"><label class="field-label">Nº Módulos</label><input id="pi-modNum" type="number" oninput="saveProjNested('modulos','numModulos',+this.value)"></div>
+          <hr class="divider">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Fab. Inversores</label><input id="pi-invFab" oninput="saveProjNested('inversores','fabricante',this.value)"></div>
+            <div class="field"><label class="field-label">Modelo</label><input id="pi-invMod" oninput="saveProjNested('inversores','modelo',this.value)"></div>
+          </div>
+          <div class="field mt-8"><label class="field-label">Nº Inversores</label><input id="pi-invNum" type="number" oninput="saveProjNested('inversores','numInversores',+this.value)"></div>
+          <hr class="divider">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Fab. Seguidores</label><input id="pi-segFab" oninput="saveProjNested('seguidor','fabricante',this.value)"></div>
+            <div class="field"><label class="field-label">Tipo</label>
+              <select id="pi-segTip" onchange="saveProjNested('seguidor','tipo',this.value)">
+                <option value="">—</option>
+                <option>1-axis horizontal</option><option>2-axis</option><option>Fixed tilt</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Hitos Garantizados</div>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field"><label class="field-label">TM (EPC)</label><input id="pi-tm" type="date" oninput="saveProjNested('hitos','tm',this.value)"></div>
+            <div class="field"><label class="field-label">CAP (EPC)</label><input id="pi-cap" type="date" oninput="saveProjNested('hitos','cap',this.value)"></div>
+          </div>
+          <div class="field-row mt-8">
+            <div class="field"><label class="field-label">TM (ICE)</label><input id="pi-iceTm" type="date" oninput="saveProjNested('hitos','iceTm',this.value)"></div>
+            <div class="field"><label class="field-label">CAP (ICE)</label><input id="pi-iceCap" type="date" oninput="saveProjNested('hitos','iceCap',this.value)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: VISITS -->
+    <div id="tab-visits" hidden>
+      <div id="visits-list"><!-- filled by JS --></div>
+      <button class="btn btn-primary btn-full mt-16" onclick="createVisit()">+ Nueva Visita</button>
+    </div>
+
+    <!-- TAB: EXPORT -->
+    <div id="tab-export" hidden>
+      <div class="card">
+        <div class="card-body">
+          <p style="color:var(--text2);font-size:14px;margin-bottom:16px">Genera el informe de visita en inglés o español para abrir en Word.</p>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+            <span style="font-size:13px;font-weight:500;color:var(--text2)">Idioma:</span>
+            <button id="lang-en-btn" class="lang-btn active" onclick="setReportLang('en',this)">🇬🇧 English</button>
+            <button id="lang-es-btn" class="lang-btn" onclick="setReportLang('es',this)">🇪🇸 Español</button>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="generateWordReport()">📄 Generar Informe de Visita (.html)</button>
+          <div class="mt-8" style="height:1px;background:var(--border)"></div>
+          <p style="color:var(--text2);font-size:13px;margin:12px 0 8px">Exportar / Importar datos del proyecto:</p>
+          <button class="btn btn-secondary btn-full" onclick="exportProject()">↑ Exportar JSON del Proyecto</button>
+          <button class="btn btn-secondary btn-full mt-8" onclick="document.getElementById('import-json-input').click()">↓ Importar JSON del Proyecto</button>
+          <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="importProjectFromJSON(this)">
+          <div class="mt-8 text-sm text-muted">El informe se abre directamente en Word o Pages. El JSON permite hacer copia de seguridad o cargar datos de ejemplo.</div>
+        </div>
+      </div>
+      <div class="card mt-12">
+        <div class="card-header"><div class="section-title" style="color:var(--danger)">Zona de Peligro</div></div>
+        <div class="card-body">
+          <button class="btn btn-danger btn-full" onclick="deleteProject()">🗑 Eliminar Proyecto</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗ -->
+<!-- ║  SCREEN: VISITA FORM                                        ║ -->
+<!-- ╚══════════════════════════════════════════════════════════════╝ -->
+<div class="screen" id="screen-visit">
+  <header class="app-header">
+    <button class="header-btn" onclick="goToProject()" style="display:flex;align-items:center;gap:5px;padding:6px 10px">
+      <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M7 1L1 6.5 7 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Volver
+    </button>
+    <div style="flex:1;text-align:center">
+      <div class="header-title" id="visit-header-date"></div>
+    </div>
+    <button class="header-btn" style="color:#f87171" onclick="deleteVisit()" title="Eliminar visita">🗑</button>
+    <button class="header-btn" id="visit-save-btn" onclick="saveVisit()">Guardar</button>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showVisitTab('pre',this)">PRE-VISITA</button>
+    <button class="tab-btn" onclick="showVisitTab('en',this)">EN VISITA</button>
+  </div>
+
+  <div class="content">
+    <!-- PRE-VISITA TAB -->
+    <div id="vtab-pre">
+
+      <!-- Datos generales -->
+      <div class="section" id="vsec-general">
+        <div class="section-header" onclick="toggleSection('vsec-general')">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Datos de la Visita</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-general-body">
+          <div class="field-row">
+            <div class="field"><label class="field-label">Fecha</label><input type="date" id="vf-fecha" oninput="setVisitField('fecha',this.value)"></div>
+            <div class="field"><label class="field-label">Hora</label><input type="time" id="vf-hora" oninput="setVisitField('hora',this.value)"></div>
+          </div>
+          <div class="field mt-8"><label class="field-label">Asistentes</label>
+            <input id="vf-asistentes" placeholder="Nombres separados por coma" oninput="setVisitField('asistentes',this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal previsto -->
+      <div class="section" id="vsec-equipos-pre">
+        <div class="section-header stripe-pre" onclick="toggleSection('vsec-equipos-pre')">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Personal y Maquinaria Previstos</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-equipos-pre-body">
+          <div class="overflow-x">
+            <table class="mini-table" id="tbl-equip-pre">
+              <thead><tr>
+                <th>Actividad</th><th>Subcontrata</th><th>Maquinaria</th><th>Personas</th>
+              </tr></thead>
+              <tbody id="tbody-equip-pre"><!-- JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compras y entregas -->
+      <div class="section" id="vsec-compras-pre">
+        <div class="section-header stripe-pre" onclick="toggleSection('vsec-compras-pre')">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Compras y Entregas</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-compras-pre-body">
+          <div class="overflow-x">
+            <table class="mini-table" id="tbl-compras-pre">
+              <thead><tr>
+                <th>Partida</th><th>Compras %</th><th>Entrega %</th><th>F.Est.</th>
+              </tr></thead>
+              <tbody id="tbody-compras-pre"><!-- JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Civil -->
+      <div class="section" id="vsec-civil">
+        <div class="section-header stripe-pre" onclick="toggleSection('vsec-civil')">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Progreso Civil</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-civil-body">
+          <div class="overflow-x">
+            <table class="mini-table">
+              <thead><tr><th>Partida</th><th>Inicio</th><th>Final</th><th>% Cont.</th><th>% Real</th></tr></thead>
+              <tbody id="tbody-civil"><!-- JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mecánico -->
+      <div class="section" id="vsec-mec">
+        <div class="section-header stripe-pre" onclick="toggleSection('vsec-mec')">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Progreso Mecánico</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-mec-body">
+          <div class="overflow-x">
+            <table class="mini-table">
+              <thead><tr><th>Partida</th><th>Inicio</th><th>Final</th><th>% Cont.</th><th>% Real</th></tr></thead>
+              <tbody id="tbody-mec"><!-- JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eléctrico -->
+      <div class="section" id="vsec-elec">
+        <div class="section-header stripe-pre" onclick="toggleSection('vsec-elec')">
+          <div class="section-dot dot-pre"></div>
+          <div class="section-title">Progreso Eléctrico</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-elec-body">
+          <div class="overflow-x">
+            <table class="mini-table">
+              <thead><tr><th>Partida</th><th>Inicio</th><th>Final</th><th>% Cont.</th><th>% Real</th></tr></thead>
+              <tbody id="tbody-elec"><!-- JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end vtab-pre -->
+
+    <!-- EN VISITA TAB -->
+    <div id="vtab-en" hidden>
+
+      <!-- Personal observado -->
+      <div class="section" id="vsec-equipos-en">
+        <div class="section-header stripe-vis" onclick="toggleSection('vsec-equipos-en')">
+          <div class="section-dot dot-vis"></div>
+          <div class="section-title">Personal y Maquinaria Observados</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-equipos-en-body">
+          <div class="overflow-x">
+            <table class="mini-table">
+              <thead><tr><th>Actividad</th><th>Subcontrata</th><th>Personas</th><th>Ratio</th><th>Comentarios</th></tr></thead>
+              <tbody id="tbody-equip-en"><!-- JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comentarios construcción -->
+      <div class="section" id="vsec-coment-constr">
+        <div class="section-header stripe-vis" onclick="toggleSection('vsec-coment-constr')">
+          <div class="section-dot dot-vis"></div>
+          <div class="section-title">Comentarios Construcción</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-coment-constr-body">
+          <div id="coment-constr-list"><!-- JS --></div>
+        </div>
+      </div>
+
+      <!-- Comentarios compras -->
+      <div class="section" id="vsec-coment-compras">
+        <div class="section-header stripe-vis" onclick="toggleSection('vsec-coment-compras')">
+          <div class="section-dot dot-vis"></div>
+          <div class="section-title">Comentarios Compras y Entregas</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-coment-compras-body">
+          <div id="coment-compras-list"><!-- JS --></div>
+        </div>
+      </div>
+
+      <!-- Fotos -->
+      <div class="section" id="vsec-fotos">
+        <div class="section-header stripe-vis" onclick="toggleSection('vsec-fotos')">
+          <div class="section-dot dot-vis"></div>
+          <div class="section-title">Fotos</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-fotos-body">
+          <div id="fotos-list"><!-- JS --></div>
+        </div>
+      </div>
+
+      <!-- Conclusiones PV -->
+      <div class="section" id="vsec-concl">
+        <div class="section-header stripe-vis" onclick="toggleSection('vsec-concl')">
+          <div class="section-dot dot-vis"></div>
+          <div class="section-title">Conclusiones</div>
+          <span class="section-arrow open">▶</span>
+        </div>
+        <div class="section-body" id="vsec-concl-body">
+          <div class="concl-block">
+            <label class="field-label">Planta PV — Estado General</label>
+            <textarea id="concl-pv" rows="3" placeholder="Estado de avance general de la planta PV…" oninput="setVisitNested('envisita','conclusionesPV',this.value)"></textarea>
+          </div>
+          <div class="concl-block mt-8">
+            <label class="field-label">ICE — Estado General</label>
+            <textarea id="concl-ice" rows="3" placeholder="Estado de avance del ICE…" oninput="setVisitNested('envisita','conclusionesICE',this.value)"></textarea>
+          </div>
+          <div class="concl-block mt-8">
+            <label class="field-label">Aspectos Legales</label>
+            <textarea id="concl-legal" rows="3" placeholder="Permisos, licencias, garantías pendientes…" oninput="setVisitNested('envisita','conclusionesLegal',this.value)"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end vtab-en -->
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════╗ -->
+<!-- ║  MODAL: NEW PROJECT                                         ║ -->
+<!-- ╚══════════════════════════════════════════════════════════════╝ -->
+<div class="modal-bg" id="modal-new-project">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Nuevo Proyecto</div>
+    <div class="modal-body">
+      <div class="field"><label class="field-label">Nombre del Proyecto</label>
+        <input id="np-nombre" placeholder="Planta FV Casafuerte IV">
+      </div>
+      <div class="field"><label class="field-label">Localización</label>
+        <input id="np-loc" placeholder="Burgos, España">
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Potencia Pico</label><input id="np-pp" placeholder="125 MWp"></div>
+        <div class="field"><label class="field-label">Estado</label>
+          <select id="np-estado">
+            <option value="construccion">En Construcción</option>
+            <option value="operacion">En Operación</option>
+            <option value="finalizado">Finalizado</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full mt-16" onclick="createProject()">Crear Proyecto</button>
+      <button class="btn btn-full mt-8" style="color:var(--text3)" onclick="closeModal('modal-new-project')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CONFIRM DELETE -->
+<div class="modal-bg" id="modal-confirm-delete">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-confirm-title">¿Eliminar?</div>
+    <div class="modal-body">
+      <p id="modal-confirm-msg" style="color:var(--text2);font-size:14px;margin-bottom:20px"></p>
+      <button class="btn btn-full mt-8" style="background:#c0392b;color:#fff;font-weight:600" id="modal-confirm-ok">Eliminar</button>
+      <button class="btn btn-full mt-8" style="color:var(--text3)" onclick="closeModal('modal-confirm-delete')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EXPORT JSON -->
+<div class="modal-bg" id="modal-export-json">
+  <div class="modal-sheet" style="max-height:85vh;display:flex;flex-direction:column">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Exportar JSON del Proyecto</div>
+    <div class="modal-body" style="flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px">
+      <p style="color:var(--text2);font-size:13px;margin:0">Copia este JSON y guárdalo como archivo .json para importarlo en otro dispositivo.</p>
+      <textarea id="export-json-textarea" readonly style="flex:1;min-height:200px;font-family:monospace;font-size:11px;border:1px solid var(--border);border-radius:8px;padding:10px;background:var(--surface2);color:var(--text);resize:none;width:100%;box-sizing:border-box"></textarea>
+      <button class="btn btn-primary btn-full" id="share-json-btn" onclick="shareExportJSON()" style="display:none">⬆️ Compartir (WhatsApp, email…)</button>
+      <button class="btn btn-secondary btn-full" id="copy-json-btn" onclick="copyExportJSON()">📋 Copiar al portapapeles</button>
+      <button class="btn btn-full mt-8" style="color:var(--text3)" onclick="closeModal('modal-export-json')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: REPORT VIEWER -->
+<div class="modal-bg" id="modal-report" style="align-items:stretch;padding:0">
+  <div style="background:var(--surface);width:100%;height:100%;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--header);color:#fff;flex-shrink:0">
+      <button onclick="closeModal('modal-report')" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:4px 8px">✕</button>
+      <span style="font-weight:600;font-size:15px;flex:1" id="report-title">Informe</span>
+      <button onclick="copyReportHTML()" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:12px;cursor:pointer;padding:6px 10px;border-radius:6px">📋 Copiar HTML</button>
+    </div>
+    <iframe id="report-iframe" style="flex:1;border:none;width:100%;background:#fff"></iframe>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  BOTTOM NAV                                                    -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-item active" onclick="navigate('projects')">
+    <span class="nav-icon">🏗</span>Proyectos
+  </button>
+  <button class="nav-item" onclick="navigate('projects')">
+    <span class="nav-icon">📋</span>Visitas
+  </button>
+  <button class="nav-item" onclick="showAbout()">
+    <span class="nav-icon">ℹ️</span>Info
+  </button>
+</nav>
+
+<input type="file" id="photo-input" accept="image/*" multiple hidden>
+
+<!-- Firebase SDK (compat v9) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   DATA CONSTANTS
+══════════════════════════════════════════════════════════════════ */
+const PARTIDAS_CIVIL = [
+  {id:'3.1',nombre:'Terreno y accesos'},
+  {id:'3.2',nombre:'Vallado perimetral y puertas'},
+  {id:'3.3',nombre:'Sistema vigilancia CCTV'},
+  {id:'3.4',nombre:'Centro control y mantenimiento'},
+  {id:'3.9',nombre:'Centros de transformación (STS)'},
+  {id:'3.10',nombre:'Cableado BT y MT'},
+  {id:'3.11',nombre:'SCADA y est. meteorológicas'},
+  {id:'4.1',nombre:'Zanjas exteriores MT'},
+  {id:'4.2',nombre:'Centro de seccionamiento'},
+];
+const PARTIDAS_MEC = [
+  {id:'3.5',nombre:'Hincas'},
+  {id:'3.6',nombre:'Seguidores solares'},
+  {id:'3.7',nombre:'Módulos fotovoltaicos'},
+  {id:'3.8',nombre:'Inversores/transformadores'},
+  {id:'3.12',nombre:'Equipos de medida'},
+  {id:'3.13',nombre:'Instalación anti-intrusión'},
+  {id:'3.14',nombre:'Puesta a tierra'},
+  {id:'3.15',nombre:'Obra civil auxiliar'},
+  {id:'3.16',nombre:'Pruebas y puesta en servicio'},
+];
+const PARTIDAS_ELEC = [
+  {id:'E.1',nombre:'Canalizaciones eléctricas'},
+  {id:'E.2',nombre:'Cables DC'},
+  {id:'E.3',nombre:'Cables AC BT'},
+  {id:'E.4',nombre:'Cables AC MT'},
+  {id:'E.5',nombre:'Protecciones eléctricas'},
+  {id:'E.6',nombre:'Sistema de monitorización'},
+];
+const PARTIDAS_COMPRAS = [
+  ...PARTIDAS_CIVIL.slice(0,4),
+  {id:'3.5',nombre:'Módulos FV'},
+  {id:'3.6',nombre:'Seguidores'},
+  {id:'3.7',nombre:'Inversores'},
+  {id:'3.8',nombre:'Transformadores'},
+  {id:'3.9',nombre:'STS / CTs'},
+  {id:'3.10',nombre:'Cable BT/MT'},
+  {id:'3.11',nombre:'SCADA'},
+  {id:'3.12',nombre:'Protecciones'},
+  {id:'3.13',nombre:'Antiintrusión'},
+  {id:'3.14',nombre:'Puesta a tierra'},
+  {id:'4.1',nombre:'Zanjas MT'},
+  {id:'4.2',nombre:'Centro seccionamiento'},
+];
+const EQUIPOS_TAREAS = [
+  {id:'civil',nombre:'Obra civil'},
+  {id:'seguridad',nombre:'Seguridad'},
+  {id:'hincas',nombre:'  ↳ Hincas'},
+  {id:'modulos',nombre:'  ↳ Módulos'},
+  {id:'seguidores',nombre:'  ↳ Seguidores'},
+  {id:'electrico',nombre:'Trabajos eléctricos'},
+  {id:'mt',nombre:'  ↳ Línea MT'},
+];
+const FOTO_CATS = [
+  {id:'3.1',nombre:'Accesos'},
+  {id:'3.2',nombre:'Vallado'},
+  {id:'3.3',nombre:'CCTV'},
+  {id:'3.5',nombre:'Hincas'},
+  {id:'3.6',nombre:'Seguidores'},
+  {id:'3.7',nombre:'Módulos'},
+  {id:'3.8',nombre:'Inversores'},
+  {id:'3.9',nombre:'STS / CTs'},
+  {id:'3.10',nombre:'Cableado'},
+  {id:'3.11',nombre:'SCADA'},
+  {id:'4.2',nombre:'Centro seccionamiento'},
+];
+
+/* ══════════════════════════════════════════════════════════════════
+   FIREBASE / FIRESTORE
+══════════════════════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyC9ns1HJXxiAevk5SIhoguV9beaYx4JuRE",
+  authDomain: "maqueta-g-advisory.firebaseapp.com",
+  projectId: "maqueta-g-advisory",
+  storageBucket: "maqueta-g-advisory.firebasestorage.app",
+  messagingSenderId: "429147822992",
+  appId: "1:429147822992:web:142b7f172c433f74dd3115"
+};
+
+firebase.initializeApp(firebaseConfig);
+const firestoreDB = firebase.firestore();
+
+// Wrapper functions with same signature as the old IndexedDB layer
+async function dbGet(store, key){
+  const snap = await firestoreDB.collection(store).doc(key).get();
+  return snap.exists ? snap.data() : undefined;
+}
+async function dbGetAll(store){
+  const snap = await firestoreDB.collection(store).get();
+  return snap.docs.map(d => d.data());
+}
+async function dbPut(store, obj){
+  await firestoreDB.collection(store).doc(obj.id).set(obj);
+}
+async function dbDel(store, key){
+  await firestoreDB.collection(store).doc(key).delete();
+}
+async function dbGetByIndex(store, idx, val){
+  const snap = await firestoreDB.collection(store).where(idx, '==', val).get();
+  return snap.docs.map(d => d.data());
+}
+
+function initApp(){ return Promise.resolve(); } // Firebase init is synchronous
+
+/* ══════════════════════════════════════════════════════════════════
+   APP STATE
+══════════════════════════════════════════════════════════════════ */
+let currentProjectId = null;
+let currentVisitId   = null;
+let currentVisit     = null;
+let currentProject   = null;
+let photoTarget      = null; // {visitId, catId}
+
+/* ══════════════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════════════ */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+function navigate(screen){ showScreen(screen); loadProjectsList(); }
+function goBack(){ navigate('projects'); }
+async function goToProject(){
+  await saveVisit();
+  await showProjectScreen(currentProjectId);
+  showProjTab('visits', document.querySelectorAll('#screen-project .tab-btn')[1]);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PROJECTS LIST
+══════════════════════════════════════════════════════════════════ */
+async function loadProjectsList(){
+  const projects = await dbGetAll('projects');
+  const el = document.getElementById('projects-list');
+  if(!projects.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">🌞</div><div class="empty-title">Sin proyectos</div><p class="text-muted">Crea tu primer proyecto de planta FV</p></div>`;
+    return;
+  }
+  projects.sort((a,b)=>b.updatedAt-a.updatedAt);
+  el.innerHTML = projects.map(p=>`
+    <div class="project-item" onclick="showProjectScreen('${p.id}')">
+      <div class="project-item-body">
+        <div class="project-item-name">${esc(p.nombre)}</div>
+        <div class="project-item-meta">${esc(p.localizacion||'')} ${p.potenciaPico?'· '+esc(p.potenciaPico):''}</div>
+        <div class="mt-8">
+          <span class="badge badge-active">${p.estado==='construccion'?'En construcción':p.estado==='operacion'?'En operación':'Finalizado'}</span>
+        </div>
+      </div>
+      <svg class="project-item-arrow" width="7" height="12" viewBox="0 0 7 12"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+    </div>
+  `).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PROJECT SCREEN
+══════════════════════════════════════════════════════════════════ */
+async function showProjectScreen(id){
+  currentProjectId = id;
+  const p = await dbGet('projects', id);
+  currentProject = p;
+  showScreen('project');
+  document.getElementById('proj-header-name').textContent = p.nombre;
+  // summary band
+  const visitas = await dbGetByIndex('visitas','proyectoId',id);
+  document.getElementById('proj-summary').innerHTML=`
+    <div class="stat-row" style="margin-top:16px">
+      <div class="stat-box"><div class="stat-val">${visitas.length}</div><div class="stat-lbl">Visitas</div></div>
+      <div class="stat-box"><div class="stat-val">${esc(p.potenciaPico||'—')}</div><div class="stat-lbl">Potencia</div></div>
+      <div class="stat-box"><div class="stat-val">${visitas.filter(v=>v.estado==='cerrada').length}</div><div class="stat-lbl">Cerradas</div></div>
+    </div>`;
+  // fill info tab
+  document.getElementById('pi-potPico').value=p.potenciaPico||'';
+  document.getElementById('pi-potNom').value=p.potenciaNominal||'';
+  document.getElementById('pi-poi').value=p.capacidadPOI||'';
+  document.getElementById('pi-loc').value=p.localizacion||'';
+  document.getElementById('pi-modFab').value=(p.modulos||{}).fabricante||'';
+  document.getElementById('pi-modMod').value=(p.modulos||{}).modelo||'';
+  document.getElementById('pi-modNum').value=(p.modulos||{}).numModulos||'';
+  document.getElementById('pi-invFab').value=(p.inversores||{}).fabricante||'';
+  document.getElementById('pi-invMod').value=(p.inversores||{}).modelo||'';
+  document.getElementById('pi-invNum').value=(p.inversores||{}).numInversores||'';
+  document.getElementById('pi-segFab').value=(p.seguidor||{}).fabricante||'';
+  document.getElementById('pi-segTip').value=(p.seguidor||{}).tipo||'';
+  document.getElementById('pi-tm').value=(p.hitos||{}).tm||'';
+  document.getElementById('pi-cap').value=(p.hitos||{}).cap||'';
+  document.getElementById('pi-iceTm').value=(p.hitos||{}).iceTm||'';
+  document.getElementById('pi-iceCap').value=(p.hitos||{}).iceCap||'';
+  // fill visits tab
+  loadVisitsList(visitas);
+  showProjTab('info', document.querySelector('.tab-btn.active'));
+}
+
+async function saveProjField(field, val){
+  if(!currentProjectId) return;
+  const p = await dbGet('projects', currentProjectId);
+  p[field] = val; p.updatedAt = Date.now();
+  await dbPut('projects', p);
+}
+async function saveProjNested(obj, field, val){
+  if(!currentProjectId) return;
+  const p = await dbGet('projects', currentProjectId);
+  if(!p[obj]) p[obj]={};
+  p[obj][field] = val; p.updatedAt = Date.now();
+  await dbPut('projects', p);
+}
+
+function loadVisitsList(visitas){
+  const el = document.getElementById('visits-list');
+  if(!visitas.length){
+    el.innerHTML=`<div class="empty" style="padding:24px 0"><div class="empty-icon">📋</div><div class="empty-title">Sin visitas</div><p class="text-muted text-sm">Crea la primera visita de obra</p></div>`;
+    return;
+  }
+  const sorted = [...visitas].sort((a,b)=> new Date(b.fecha)-new Date(a.fecha));
+  el.innerHTML = sorted.map(v=>`
+    <div class="visit-item" onclick="openVisit('${v.id}')">
+      <div>
+        <div class="visit-date">${formatDate(v.fecha)}</div>
+        <div class="visit-meta">${v.hora||''} ${v.asistentes?'· '+esc(v.asistentes).slice(0,35):''}</div>
+      </div>
+      <div class="visit-status">
+        <span class="badge ${v.estado==='cerrada'?'badge-closed':'badge-active'}">${v.estado==='cerrada'?'Cerrada':'Borrador'}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showProjTab(tab, btn){
+  ['info','visits','export'].forEach(t=>document.getElementById('tab-'+t).hidden = t!==tab);
+  document.querySelectorAll('#screen-project .tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CREATE PROJECT
+══════════════════════════════════════════════════════════════════ */
+function openNewProjectModal(){ openModal('modal-new-project'); }
+async function createProject(){
+  const nom = document.getElementById('np-nombre').value.trim();
+  if(!nom){ toast('Introduce un nombre'); return; }
+  const p = {
+    id: uid(), nombre: nom,
+    localizacion: document.getElementById('np-loc').value.trim(),
+    potenciaPico: document.getElementById('np-pp').value.trim(),
+    estado: document.getElementById('np-estado').value,
+    modulos:{}, inversores:{}, seguidor:{}, hitos:{},
+    potenciaNominal:'', capacidadPOI:'',
+    createdAt: Date.now(), updatedAt: Date.now()
+  };
+  await dbPut('projects', p);
+  closeModal('modal-new-project');
+  toast('Proyecto creado ✓');
+  document.getElementById('np-nombre').value='';
+  document.getElementById('np-loc').value='';
+  document.getElementById('np-pp').value='';
+  await showProjectScreen(p.id);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CREATE / OPEN VISIT
+══════════════════════════════════════════════════════════════════ */
+async function createVisit(){
+  // inherit last visit state
+  const prev = await dbGetByIndex('visitas','proyectoId',currentProjectId);
+  prev.sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  const last = prev[0];
+
+  const buildRows = (arr, keys) => arr.map(p=>{
+    const obj={id:p.id,nombre:p.nombre};
+    keys.forEach(k=>obj[k]='');
+    return obj;
+  });
+
+  const v = {
+    id: uid(), proyectoId: currentProjectId,
+    fecha: today(), hora: '', asistentes: '',
+    estado: 'borrador',
+    previsita:{
+      equipos: EQUIPOS_TAREAS.map(e=>({id:e.id,nombre:e.nombre,subcontratista:'',maquinaria:'',numPersonas:'',ingresoObra:'',salidaObra:''})),
+      compras: PARTIDAS_COMPRAS.map(p=>({id:p.id,nombre:p.nombre,comprasPct:'',entregaPct:'',fechaEstimada:''})),
+      civil:   PARTIDAS_CIVIL.map(p=>({id:p.id,nombre:p.nombre,inicioContractual:'',finalContractual:'',pctContractual:'',pctActual:''})),
+      mecanica:PARTIDAS_MEC.map(p=>({id:p.id,nombre:p.nombre,inicioContractual:'',finalContractual:'',pctContractual:'',pctActual:''})),
+      electrica:PARTIDAS_ELEC.map(p=>({id:p.id,nombre:p.nombre,inicioContractual:'',finalContractual:'',pctContractual:'',pctActual:''})),
+    },
+    envisita:{
+      equipos: EQUIPOS_TAREAS.map(e=>({id:e.id,nombre:e.nombre,subcontratista:'',maquinaria:'',numPersonas:'',ratio:'',comentarios:''})),
+      comentariosConstruccion: [...PARTIDAS_CIVIL,...PARTIDAS_MEC,...PARTIDAS_ELEC].map(p=>({id:p.id,nombre:p.nombre,comentarios:''})),
+      comentariosCompras: PARTIDAS_COMPRAS.map(p=>({id:p.id,nombre:p.nombre,fechaEstimadaEntrega:'',comentarios:''})),
+      fotos: FOTO_CATS.map(c=>({id:c.id,nombre:c.nombre,imagenes:[]})),
+      conclusionesPV:'', conclusionesICE:'', conclusionesLegal:''
+    },
+    createdAt: Date.now(), updatedAt: Date.now()
+  };
+  // inherit numeric values from last visit
+  if(last){
+    ['civil','mecanica','electrica'].forEach(sec=>{
+      v.previsita[sec].forEach(row=>{
+        const prev = last.previsita[sec].find(r=>r.id===row.id);
+        if(prev){ row.inicioContractual=prev.inicioContractual||''; row.finalContractual=prev.finalContractual||''; row.pctContractual=prev.pctContractual||''; row.pctActual=prev.pctActual||''; }
+      });
+    });
+  }
+  await dbPut('visitas', v);
+  openVisit(v.id);
+}
+
+async function openVisit(id){
+  currentVisitId = id;
+  const v = await dbGet('visitas', id);
+  currentVisit = JSON.parse(JSON.stringify(v)); // deep copy
+  // Ensure envisita.fotos exists (may be missing in imported/old visits)
+  if(!currentVisit.envisita) currentVisit.envisita = {};
+  if(!currentVisit.envisita.fotos) currentVisit.envisita.fotos = FOTO_CATS.map(c=>({id:c.id,nombre:c.nombre,imagenes:[]}));
+  // Migrate old split fields → comentariosConstruccion
+  if(!currentVisit.envisita.comentariosConstruccion){
+    const old = [
+      ...(currentVisit.envisita.comentariosCivil||[]),
+      ...(currentVisit.envisita.comentariosMecanica||[]),
+      ...(currentVisit.envisita.comentariosElectrica||[])
+    ];
+    currentVisit.envisita.comentariosConstruccion = old.length
+      ? old
+      : [...PARTIDAS_CIVIL,...PARTIDAS_MEC,...PARTIDAS_ELEC].map(p=>({id:p.id,nombre:p.nombre,comentarios:''}));
+  }
+  if(!currentVisit.envisita.comentariosCompras) currentVisit.envisita.comentariosCompras = PARTIDAS_COMPRAS.map(p=>({id:p.id,nombre:p.nombre,fechaEstimadaEntrega:'',comentarios:''}));
+  if(!currentVisit.envisita.equipos) currentVisit.envisita.equipos = EQUIPOS_TAREAS.map(e=>({id:e.id,nombre:e.nombre,subcontratista:'',maquinaria:'',numPersonas:'',ratio:'',comentarios:''}));
+  renderVisitForm();
+  showScreen('visit');
+  showVisitTab('pre', document.querySelector('#screen-visit .tab-btn'));
+}
+
+async function saveVisit(){
+  if(!currentVisit) return;
+  currentVisit.updatedAt = Date.now();
+  await dbPut('visitas', currentVisit);
+  toast('Visita guardada ✓');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   VISIT FORM RENDERING
+══════════════════════════════════════════════════════════════════ */
+function renderVisitForm(){
+  const v = currentVisit;
+  document.getElementById('visit-header-date').textContent = formatDate(v.fecha) || 'Nueva Visita';
+  document.getElementById('vf-fecha').value = v.fecha||'';
+  document.getElementById('vf-hora').value  = v.hora||'';
+  document.getElementById('vf-asistentes').value = v.asistentes||'';
+  renderEquiposPreTable();
+  renderComprasTable();
+  renderProgressTable('civil','tbody-civil',v.previsita.civil);
+  renderProgressTable('mecanica','tbody-mec',v.previsita.mecanica);
+  renderProgressTable('electrica','tbody-elec',v.previsita.electrica);
+  renderEquiposEnTable();
+  renderComentConstruct();
+  renderComentCompras();
+  renderFotos();
+  document.getElementById('concl-pv').value   = v.envisita.conclusionesPV||'';
+  document.getElementById('concl-ice').value  = v.envisita.conclusionesICE||'';
+  document.getElementById('concl-legal').value= v.envisita.conclusionesLegal||'';
+}
+
+function renderEquiposPreTable(){
+  const rows = currentVisit.previsita.equipos;
+  document.getElementById('tbody-equip-pre').innerHTML = rows.map((r,i)=>`
+    <tr>
+      <td style="min-width:110px;font-size:12px">${esc(r.nombre)}</td>
+      <td><input value="${esc(r.subcontratista)}" placeholder="—" oninput="setPreEquipo(${i},'subcontratista',this.value)"></td>
+      <td><input value="${esc(r.maquinaria)}" placeholder="—" oninput="setPreEquipo(${i},'maquinaria',this.value)"></td>
+      <td><input type="number" value="${r.numPersonas||''}" oninput="setPreEquipo(${i},'numPersonas',+this.value)" style="width:56px"></td>
+    </tr>`).join('');
+}
+function setPreEquipo(i,k,v){ currentVisit.previsita.equipos[i][k]=v; }
+
+function renderComprasTable(){
+  const rows = currentVisit.previsita.compras;
+  document.getElementById('tbody-compras-pre').innerHTML = rows.map((r,i)=>`
+    <tr>
+      <td style="min-width:100px;font-size:12px">${esc(r.nombre)}</td>
+      <td><input type="number" min="0" max="100" value="${r.comprasPct||''}" oninput="setPreCompra(${i},'comprasPct',+this.value)" style="width:56px"></td>
+      <td><input type="number" min="0" max="100" value="${r.entregaPct||''}" oninput="setPreCompra(${i},'entregaPct',+this.value)" style="width:56px"></td>
+      <td><input type="date" value="${r.fechaEstimada||''}" oninput="setPreCompra(${i},'fechaEstimada',this.value)" style="width:120px"></td>
+    </tr>`).join('');
+}
+function setPreCompra(i,k,v){ currentVisit.previsita.compras[i][k]=v; }
+
+function renderProgressTable(sec,tbodyId,rows){
+  document.getElementById(tbodyId).innerHTML = rows.map((r,i)=>`
+    <tr>
+      <td style="min-width:100px;font-size:12px">${esc(r.nombre)}</td>
+      <td><input type="date" value="${r.inicioContractual||''}" oninput="setPreProgress('${sec}',${i},'inicioContractual',this.value)" style="width:110px"></td>
+      <td><input type="date" value="${r.finalContractual||''}" oninput="setPreProgress('${sec}',${i},'finalContractual',this.value)" style="width:110px"></td>
+      <td><input type="number" min="0" max="100" value="${r.pctContractual||''}" oninput="setPreProgress('${sec}',${i},'pctContractual',+this.value)" style="width:52px"></td>
+      <td><input type="number" min="0" max="100" value="${r.pctActual||''}" oninput="setPreProgress('${sec}',${i},'pctActual',+this.value)" style="width:52px"></td>
+    </tr>`).join('');
+}
+function setPreProgress(sec,i,k,v){ currentVisit.previsita[sec][i][k]=v; }
+
+function renderEquiposEnTable(){
+  const rows = currentVisit.envisita.equipos;
+  document.getElementById('tbody-equip-en').innerHTML = rows.map((r,i)=>`
+    <tr>
+      <td style="min-width:100px;font-size:12px">${esc(r.nombre)}</td>
+      <td><input value="${esc(r.subcontratista)}" placeholder="—" oninput="setEnEquipo(${i},'subcontratista',this.value)"></td>
+      <td><input type="number" value="${r.numPersonas||''}" oninput="setEnEquipo(${i},'numPersonas',+this.value)" style="width:52px"></td>
+      <td><input type="number" step="0.1" value="${r.ratio||''}" oninput="setEnEquipo(${i},'ratio',+this.value)" style="width:52px"></td>
+      <td><input value="${esc(r.comentarios)}" placeholder="—" oninput="setEnEquipo(${i},'comentarios',this.value)"></td>
+    </tr>`).join('');
+}
+function setEnEquipo(i,k,v){ currentVisit.envisita.equipos[i][k]=v; }
+
+function renderComentConstruct(){
+  const rows = currentVisit.envisita.comentariosConstruccion;
+  document.getElementById('coment-constr-list').innerHTML = rows.map((r,i)=>`
+    <div class="field"><label class="field-label">${esc(r.nombre)}</label>
+      <textarea rows="2" placeholder="Sin observaciones" oninput="setComentConstr(${i},this.value)">${esc(r.comentarios)}</textarea>
+    </div>`).join('');
+}
+function setComentConstr(i,v){ currentVisit.envisita.comentariosConstruccion[i].comentarios=v; }
+
+function renderComentCompras(){
+  const rows = currentVisit.envisita.comentariosCompras;
+  document.getElementById('coment-compras-list').innerHTML = rows.map((r,i)=>`
+    <div class="field">
+      <label class="field-label">${esc(r.nombre)}</label>
+      <div class="field-row">
+        <div class="field" style="max-width:130px"><label class="field-label" style="font-size:10px">F. Entrega Est.</label>
+          <input type="date" value="${r.fechaEstimadaEntrega||''}" oninput="setComentCompra(${i},'fechaEstimadaEntrega',this.value)">
+        </div>
+        <div class="field"><textarea rows="2" placeholder="Sin observaciones" oninput="setComentCompra(${i},'comentarios',this.value)">${esc(r.comentarios)}</textarea></div>
+      </div>
+    </div>`).join('');
+}
+function setComentCompra(i,k,v){ currentVisit.envisita.comentariosCompras[i][k]=v; }
+
+function renderFotos(){
+  const cats = currentVisit.envisita.fotos;
+  document.getElementById('fotos-list').innerHTML = cats.map((cat,ci)=>`
+    <div class="field">
+      <label class="field-label">${esc(cat.nombre)}</label>
+      <div class="photo-grid" id="photogrid-${ci}">
+        ${cat.imagenes.map((img,ii)=>`
+          <div class="photo-thumb"><img src="${img}"><button class="photo-del" onclick="deletePhoto(${ci},${ii})">✕</button></div>
+        `).join('')}
+        <label class="photo-thumb photo-add" for="photo-input" onclick="setPhotoTarget(${ci})">
+          <span class="photo-add-icon">📷</span><span>Añadir</span>
+        </label>
+      </div>
+    </div>`).join('');
+}
+
+function setPhotoTarget(ci){ photoTarget = ci; }
+
+document.getElementById('photo-input').addEventListener('change', async function(){
+  if(photoTarget===null) return;
+  const files = Array.from(this.files);
+  for(const f of files){
+    const b64 = await fileToBase64(f);
+    currentVisit.envisita.fotos[photoTarget].imagenes.push(b64);
+  }
+  this.value='';
+  renderFotos();
+});
+
+function deletePhoto(ci,ii){
+  currentVisit.envisita.fotos[ci].imagenes.splice(ii,1);
+  renderFotos();
+}
+
+function setVisitField(k,v){
+  currentVisit[k]=v;
+  if(k==='fecha') document.getElementById('visit-header-date').textContent=formatDate(v);
+}
+function setVisitNested(sec,k,v){ currentVisit[sec][k]=v; }
+
+function showVisitTab(tab, btn){
+  document.getElementById('vtab-pre').hidden = tab!=='pre';
+  document.getElementById('vtab-en').hidden  = tab!=='en';
+  document.querySelectorAll('#screen-visit .tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   EXPORT
+══════════════════════════════════════════════════════════════════ */
+let _exportJsonText = '';
+async function exportProject(){
+  const p = await dbGet('projects', currentProjectId);
+  const visitas = await dbGetByIndex('visitas','proyectoId',currentProjectId);
+  const data = { proyecto: p, visitas: visitas.sort((a,b)=>new Date(a.fecha)-new Date(b.fecha)) };
+  _exportJsonText = JSON.stringify(data, null, 2);
+  document.getElementById('export-json-textarea').value = _exportJsonText;
+  document.getElementById('copy-json-btn').textContent = '📋 Copiar al portapapeles';
+  document.getElementById('share-json-btn').style.display = navigator.share ? '' : 'none';
+  openModal('modal-export-json');
+}
+
+async function shareExportJSON(){
+  const p = await dbGet('projects', currentProjectId);
+  const filename = `gadvisory_${safeName(p.nombre)}_${today()}.json`;
+  try {
+    await navigator.share({ title: filename, text: _exportJsonText });
+  } catch(e){ if(e.name!=='AbortError') copyExportJSON(); }
+}
+
+function copyExportJSON(){
+  navigator.clipboard.writeText(_exportJsonText).then(()=>{
+    document.getElementById('copy-json-btn').textContent = '✓ Copiado!';
+    toast('JSON copiado al portapapeles ✓');
+    setTimeout(()=>{ document.getElementById('copy-json-btn').textContent = '📋 Copiar al portapapeles'; }, 2500);
+  }).catch(()=>{
+    // fallback: select all in textarea
+    const ta = document.getElementById('export-json-textarea');
+    ta.select(); ta.setSelectionRange(0,99999);
+    toast('Selecciona todo el texto y cópialo');
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   IMPORT PROJECT FROM JSON
+══════════════════════════════════════════════════════════════════ */
+async function importProjectFromJSON(input){
+  const file = input.files[0]; if(!file) return;
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if(!data.proyecto || !data.proyecto.id){ toast('JSON inválido: falta proyecto'); input.value=''; return; }
+    const p = { ...data.proyecto, updatedAt: Date.now() };
+    await dbPut('projects', p);
+    for(const v of (data.visitas||[])){
+      await dbPut('visitas', { ...v, proyectoId: p.id });
+    }
+    input.value='';
+    toast(`Importado: ${p.nombre} (${(data.visitas||[]).length} visitas) ✓`);
+    // Reload: if already viewing this project refresh it, otherwise go to project list
+    if(currentProjectId === p.id){
+      await showProjectScreen(p.id);
+    } else {
+      await loadProjectsList();
+    }
+  } catch(e){
+    console.error(e);
+    toast('Error al importar JSON');
+    input.value='';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   HTML REPORT GENERATION
+══════════════════════════════════════════════════════════════════ */
+function rptPct(v){ return v!==''&&v!==undefined ? (parseFloat(v)*100).toFixed(0)+'%' : '—'; }
+function rptDate(s){ if(!s)return '—'; try{ return new Date(s+'T12:00:00').toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'}); }catch(e){return s;} }
+function rptEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function rptTable(headers, rows){
+  let t = '<table><thead><tr>'+headers.map(h=>`<th>${rptEsc(h)}</th>`).join('')+'</tr></thead><tbody>';
+  rows.forEach(row=>{ t+='<tr>'+row.map(c=>`<td>${rptEsc(String(c||''))}</td>`).join('')+'</tr>'; });
+  t+='</tbody></table>';
+  return t;
+}
+
+async function generateWordReport(){
+  const p = await dbGet('projects', currentProjectId);
+  const visitas = await dbGetByIndex('visitas','proyectoId',currentProjectId);
+  if(!visitas.length){ toast('No hay visitas para el informe'); return; }
+  const v = visitas.sort((a,b)=>new Date(b.fecha)-new Date(a.fecha))[0];
+  const h = p.hitos||{};
+  const lang = reportLang;
+  const isEN = lang === 'en';
+
+  // i18n labels
+  const T = {
+    title:     isEN ? 'Construction Monitoring Report' : 'Informe de Seguimiento de Construcción',
+    subtitle:  isEN ? 'PV Plant' : 'Planta FV',
+    visitDate: isEN ? 'Visit date' : 'Fecha de visita',
+    time:      isEN ? 'Time' : 'Hora',
+    attendees: isEN ? 'Attendees' : 'Asistentes',
+    s1: isEN ? '1. INTRODUCTION' : '1. INTRODUCCIÓN',
+    s2: isEN ? '2. GUARANTEED DATES IN THE EPC SCHEDULES' : '2. FECHAS GARANTIZADAS EN LOS PROGRAMAS EPC',
+    s2t1: isEN ? 'Table 2.1 – Main characteristics of the PV Plant' : 'Tabla 2.1 – Características principales de la planta FV',
+    s2t2: isEN ? 'Table 2.2 – Main equipment' : 'Tabla 2.2 – Equipos principales',
+    s2t3: isEN ? 'Table 2.3 – PV Plant milestones' : 'Tabla 2.3 – Hitos planta FV',
+    s2t4: isEN ? 'Table 2.4 – ICE milestones' : 'Tabla 2.4 – Hitos ICE',
+    s3: isEN ? '3. PV PLANT AND PEI CONSTRUCTION STATUS' : '3. ESTADO DE CONSTRUCCIÓN DE LA PLANTA FV Y PEI',
+    s31: isEN ? '3.1 Workforce' : '3.1 Personal y maquinaria',
+    s31t: isEN ? 'Table 3.2 – Workforce and machinery during visit' : 'Tabla 3.2 – Personal y maquinaria durante la visita',
+    s32: isEN ? '3.2 Engineering and supply' : '3.2 Ingeniería y suministros',
+    s32t: isEN ? 'Table 3.3 – Engineering and procurement status' : 'Tabla 3.3 – Estado de ingeniería y compras',
+    s33: isEN ? '3.3 Construction works' : '3.3 Obras de construcción',
+    s331: isEN ? '3.3.1 Civil works' : '3.3.1 Obra civil',
+    s331t: isEN ? 'Table 3.4 – Civil works progress' : 'Tabla 3.4 – Progreso obra civil',
+    s332: isEN ? '3.3.2 Mechanical assembly' : '3.3.2 Montaje mecánico',
+    s332t: isEN ? 'Table 3.5 – Mechanical assembly progress' : 'Tabla 3.5 – Progreso montaje mecánico',
+    s333: isEN ? '3.3.3 Electrical assembly' : '3.3.3 Montaje eléctrico',
+    s333t: isEN ? 'Table 3.6 – Electrical assembly progress' : 'Tabla 3.6 – Progreso montaje eléctrico',
+    s4: isEN ? '4. CEI CONSTRUCTION STATUS' : '4. ESTADO DE CONSTRUCCIÓN DEL CEI',
+    s5: isEN ? '5. CONCLUSIONS' : '5. CONCLUSIONES',
+    s5pv: isEN ? 'PV Plant and PEI' : 'Planta FV y PEI',
+    s5ice: isEN ? 'CEI' : 'CEI',
+    s5legal: isEN ? 'Legalization' : 'Legalización',
+    annex1: isEN ? 'Annex 1 – List of review documentation' : 'Anexo 1 – Lista de documentación revisada',
+    annex2: isEN ? 'Annex 2 – Layout of PV Plant' : 'Anexo 2 – Layout de la planta FV',
+    annex3: isEN ? 'Annex 3 – Photographic report' : 'Anexo 3 – Reportaje fotográfico',
+    // table column headers
+    param: isEN ? 'Parameter' : 'Parámetro',
+    value: isEN ? 'Value' : 'Valor',
+    item: isEN ? 'Item' : 'Partida',
+    task: isEN ? 'Task' : 'Tarea',
+    subcon: isEN ? 'Subcontractor' : 'Subcontratistas',
+    machinery: isEN ? 'Machinery' : 'Maquinaria',
+    people: isEN ? 'No. People' : 'Personas',
+    entry: isEN ? 'Entry' : 'Entrada',
+    exit_: isEN ? 'Exit' : 'Salida',
+    ratio: isEN ? 'Output rate' : 'Rendimiento',
+    comments: isEN ? 'Comments' : 'Comentarios',
+    activity: isEN ? 'Activity' : 'Actividad',
+    supplier: isEN ? 'Supplier' : 'Proveedor',
+    pctPurch: isEN ? 'Purchased %' : '% Comprado',
+    pctDeliv: isEN ? 'Delivered %' : '% Entregado',
+    startDate: isEN ? 'Start' : 'Inicio',
+    endDate: isEN ? 'End' : 'Final',
+    pctCont: isEN ? 'Contractual %' : '% Contractual',
+    pctActual: isEN ? 'Actual %' : '% Real',
+    milestone: isEN ? 'Milestone' : 'Hito',
+    epcDate: isEN ? 'EPC Contractual' : 'EPC Contractual',
+    iceDate: isEN ? 'ICE Contractual' : 'ICE Contractual',
+    tm: isEN ? 'Mechanical Completion (MC)' : 'Terminación Mecánica (TM)',
+    cap: isEN ? 'Commercial Availability (CAP)' : 'Disponibilidad Comercial (CAP)',
+    status: isEN ? 'Status' : 'Estado',
+    location: isEN ? 'Location' : 'Localización',
+    peakPow: isEN ? 'Peak power' : 'Potencia pico',
+    nomPow: isEN ? 'Nominal power' : 'Potencia nominal',
+    poi: isEN ? 'Grid connection (POI)' : 'Conexión a red (POI)',
+    modModel: isEN ? 'PV module model' : 'Modelo módulo FV',
+    modMfr: isEN ? 'PV module manufacturer' : 'Fabricante módulo FV',
+    modQty: isEN ? 'No. of PV modules' : 'Nº módulos FV',
+    invModel: isEN ? 'Inverter model' : 'Modelo inversor',
+    invMfr: isEN ? 'Inverter manufacturer' : 'Fabricante inversor',
+    invQty: isEN ? 'No. of inverters' : 'Nº inversores',
+    trackerMfr: isEN ? 'Tracker manufacturer' : 'Fabricante seguidor',
+    trackerType: isEN ? 'Tracker type' : 'Tipo de seguidor',
+    footer: isEN ? 'Report generated by G-Advisory · DRAFT · ' : 'Informe generado por G-Advisory · BORRADOR · ',
+  };
+
+  const css = `
+    body{font-family:Arial,sans-serif;font-size:11pt;color:#1C2B27;margin:2cm 2.5cm}
+    .cover{text-align:center;padding:40pt 0 30pt}
+    .cover-logo{font-size:22pt;font-weight:700;color:#1A3530;letter-spacing:1px}
+    .cover-logo span{color:#16968D}
+    .cover-title{font-size:17pt;font-weight:700;color:#1A3530;margin-top:12pt}
+    .cover-sub{font-size:13pt;color:#16968D;margin-top:4pt}
+    .cover-plant{font-size:12pt;color:#4A6359;margin-top:14pt}
+    .cover-meta{font-size:10pt;color:#7A9E91;margin-top:8pt}
+    .cover-line{border:none;border-top:2px solid #16968D;margin:20pt 60pt}
+    h2{font-size:13pt;font-weight:700;color:#1A3530;margin-top:18pt;margin-bottom:4pt;
+       border-bottom:1.5px solid #16968D;padding-bottom:3pt}
+    h3{font-size:11pt;font-weight:700;color:#16968D;margin-top:12pt;margin-bottom:3pt}
+    h4{font-size:10.5pt;font-weight:700;color:#1C2B27;margin-top:8pt;margin-bottom:2pt}
+    p{margin:0 0 6pt;font-size:10.5pt;line-height:1.5}
+    .caption{font-size:9.5pt;font-style:italic;color:#4A6359;margin:2pt 0 6pt}
+    table{border-collapse:collapse;width:100%;margin-bottom:8pt;font-size:9.5pt}
+    th{background:#16968D;color:#fff;padding:5px 8px;text-align:left;font-weight:600}
+    td{padding:4px 8px;border:1px solid #D8E5DF;vertical-align:top}
+    tr:nth-child(even) td{background:#F2F5F4}
+    .highlight{background:#E8F5F0!important;font-weight:600}
+    ul{margin:4pt 0 8pt;padding-left:18pt}
+    ul li{margin-bottom:3pt;font-size:10.5pt;line-height:1.5}
+    .placeholder{background:#FFF3CD;padding:0 3px;border-radius:2px}
+    .page-break{page-break-before:always}
+    .footer{font-size:8pt;color:#7A9E91;margin-top:18pt;border-top:1px solid #D8E5DF;padding-top:6pt;text-align:center}
+    @media print{body{margin:1.5cm 2cm}}
+  `;
+
+  // Helper: find comment by id
+  const findCom = (arr, id) => (arr||[]).find(c=>c.id===id)||{};
+  const comText = (arr, id) => findCom(arr,id).comentarios||'';
+
+  // Construction section helper
+  const constrSection = (label, caption, rows, commentArr) =>
+    `<h4>${rptEsc(label)}</h4><p class="caption">${rptEsc(caption)}</p>`+rptTable(
+      [T.task, T.startDate, T.endDate, T.pctCont, T.pctActual, T.comments],
+      rows.map(r=>[r.nombre, rptDate(r.inicioContractual), rptDate(r.finalContractual),
+        rptPct(r.pctContractual), rptPct(r.pctActual), comText(commentArr,r.id)])
+    );
+
+  // Bullet list helper
+  const bulletList = (items) => items.length ? '<ul>'+items.map(i=>`<li>${rptEsc(i)}</li>`).join('')+'</ul>' : '';
+
+  // Intro paragraph
+  const introText = isEN
+    ? `The PV Plant is located in the municipality of <span class="placeholder">${rptEsc(p.localizacion||'XX')}</span>. This report summarises the construction monitoring visit carried out on <b>${rptDate(v.fecha)}</b> and reflects the construction status at the date of the visit. The report has been prepared by <b>G-Advisory</b> based on information provided during the site visit and documentation reviewed from the EPC contractor.`
+    : `La planta FV está ubicada en el municipio de <span class="placeholder">${rptEsc(p.localizacion||'XX')}</span>. Este informe resume la visita de seguimiento de construcción llevada a cabo el <b>${rptDate(v.fecha)}</b> y refleja el estado de construcción en la fecha de la visita. El informe ha sido elaborado por <b>G-Advisory</b> con base en la información proporcionada durante la visita a obra y la documentación revisada del contratista EPC.`;
+
+  const s3intro = isEN
+    ? `The following section presents the construction status of the PV Plant and the PEI (Point of Energy Injection) as observed during the visit on ${rptDate(v.fecha)}. The information is based on data provided by the EPC contractor and verified on site.`
+    : `La siguiente sección presenta el estado de construcción de la planta FV y el PEI tal como se observó durante la visita del ${rptDate(v.fecha)}. La información se basa en datos proporcionados por el contratista EPC y verificados in situ.`;
+
+  const s4text = isEN
+    ? `The CEI (external connection infrastructure) comprises the underground HV line, the metering centre, the overhead HV line and the transformation substation (SET). The construction status of these elements is monitored separately by the relevant utility and is not within the scope of the EPC contract reviewed in this report. <span class="placeholder">[Insert CEI status comments here]</span>`
+    : `El CEI (infraestructura de conexión exterior) comprende la línea subterránea AT, el centro de medida, la línea aérea AT y la subestación de transformación (SET). El estado de construcción de estos elementos es monitorizado separadamente por la empresa distribuidora y no está dentro del alcance del contrato EPC revisado en este informe. <span class="placeholder">[Insertar aquí comentarios sobre el estado del CEI]</span>`;
+
+  // Workforce bullets
+  const workforceBullets = (v.envisita.equipos||[])
+    .filter(e=>e.comentarios)
+    .map(e=>`${e.nombre}: ${e.comentarios}`);
+
+  // Supply bullets (only items with comments)
+  const supplyBullets = (v.previsita.compras||[])
+    .filter(r => comText(v.envisita.comentariosCompras, r.id))
+    .map(r=>`${r.nombre}: ${comText(v.envisita.comentariosCompras, r.id)}`);
+
+  const html = `<!DOCTYPE html><html lang="${lang}"><head><meta charset="UTF-8">
+<title>${rptEsc(T.title)} — ${rptEsc(p.nombre)}</title>
+<style>${css}</style></head><body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="cover-logo">G<span>-</span>Advisory</div>
+  <hr class="cover-line">
+  <div class="cover-title">${rptEsc(T.title)}</div>
+  <div class="cover-sub">${rptEsc(T.subtitle)}</div>
+  <hr class="cover-line">
+  <div class="cover-plant">${rptEsc(p.nombre)}</div>
+  <div class="cover-meta">${T.visitDate}: <b>${rptDate(v.fecha)}</b></div>
+  <div class="cover-meta">${T.attendees}: ${rptEsc(v.asistentes||'—')}</div>
+  <div class="cover-meta" style="margin-top:16pt;font-size:9pt;color:#aaa">DRAFT — ${new Date().toLocaleDateString('en-GB')}</div>
+</div>
+
+<!-- SECTION 1 -->
+<h2>${rptEsc(T.s1)}</h2>
+<p>${introText}</p>
+
+<!-- SECTION 2 -->
+<h2>${rptEsc(T.s2)}</h2>
+
+<h3>${rptEsc(T.s2t1)}</h3>
+${rptTable([T.param, T.value],[
+  [T.status, isEN ? (p.estado||'Construction') : (p.estado||'Construcción')],
+  [T.location, p.localizacion||'—'],
+  [T.peakPow, p.potenciaPico||'—'],
+  [T.nomPow, p.potenciaNominal||'—'],
+  [T.poi, p.capacidadPOI||'—'],
+])}
+
+<h3>${rptEsc(T.s2t2)}</h3>
+${rptTable([T.param, T.value],[
+  [T.modMfr, (p.modulos||{}).fabricante||'—'],
+  [T.modModel, (p.modulos||{}).modelo||'—'],
+  [T.modQty, String((p.modulos||{}).numModulos||'—')],
+  [T.invMfr, (p.inversores||{}).fabricante||'—'],
+  [T.invModel, (p.inversores||{}).modelo||'—'],
+  [T.invQty, String((p.inversores||{}).numInversores||'—')],
+  [T.trackerMfr, (p.seguidor||{}).fabricante||'—'],
+  [T.trackerType, (p.seguidor||{}).tipo||'—'],
+])}
+
+<h3>${rptEsc(T.s2t3)}</h3>
+${rptTable([T.milestone, T.epcDate],[
+  [T.tm, rptDate(h.tm)],
+  [T.cap, rptDate(h.cap)],
+])}
+
+<h3>${rptEsc(T.s2t4)}</h3>
+${rptTable([T.milestone, T.iceDate],[
+  [T.tm, rptDate(h.iceTm)],
+  [T.cap, rptDate(h.iceCap)],
+])}
+
+<!-- SECTION 3 -->
+<h2>${rptEsc(T.s3)}</h2>
+<p>${s3intro}</p>
+
+<h3>${rptEsc(T.s31)}</h3>
+<p class="caption">${rptEsc(T.s31t)}</p>
+${rptTable([T.task, T.subcon, T.machinery, T.people, T.entry, T.exit_],
+  (v.previsita.equipos||[]).filter(e=>e.subcontratista||e.maquinaria||e.numPersonas)
+  .map(e=>[e.nombre, e.subcontratista||'', e.maquinaria||'', String(e.numPersonas||''), e.ingresoObra||'', e.salidaObra||''])
+)}
+${(v.envisita.equipos||[]).filter(e=>e.numPersonas||e.ratio||e.comentarios).length ? `
+<p class="caption">${isEN?'Observed workforce and output rates during the visit:':'Personal y rendimiento observados durante la visita:'}</p>
+${rptTable([T.task, T.people, T.ratio, T.comments],
+  (v.envisita.equipos||[]).filter(e=>e.numPersonas||e.ratio||e.comentarios)
+  .map(e=>[e.nombre, String(e.numPersonas||''), e.ratio||'', e.comentarios||''])
+)}` : ''}
+${workforceBullets.length ? bulletList(workforceBullets) : ''}
+
+<h3>${rptEsc(T.s32)}</h3>
+<p class="caption">${rptEsc(T.s32t)}</p>
+${rptTable([T.activity, T.pctPurch, T.pctDeliv, T.comments],
+  (v.previsita.compras||[]).map(r=>[
+    r.nombre,
+    rptPct(r.comprasPct),
+    rptPct(r.entregaPct),
+    comText(v.envisita.comentariosCompras, r.id)
+  ])
+)}
+${supplyBullets.length ? bulletList(supplyBullets) : ''}
+
+<h3>${rptEsc(T.s33)}</h3>
+${constrSection(T.s331, T.s331t, v.previsita.civil||[], v.envisita.comentariosCivil)}
+${constrSection(T.s332, T.s332t, v.previsita.mecanica||[], v.envisita.comentariosMecanica)}
+${constrSection(T.s333, T.s333t, v.previsita.electrica||[], v.envisita.comentariosElectrica)}
+
+<!-- SECTION 4 -->
+<h2>${rptEsc(T.s4)}</h2>
+<p>${s4text}</p>
+
+<!-- SECTION 5 -->
+<h2>${rptEsc(T.s5)}</h2>
+${v.envisita.conclusionesPV ? `<h3>${rptEsc(T.s5pv)}</h3>${bulletList(v.envisita.conclusionesPV.split('\n').filter(s=>s.trim()))||'<p>'+rptEsc(v.envisita.conclusionesPV)+'</p>'}` : ''}
+${v.envisita.conclusionesICE ? `<h3>${rptEsc(T.s5ice)}</h3>${bulletList(v.envisita.conclusionesICE.split('\n').filter(s=>s.trim()))||'<p>'+rptEsc(v.envisita.conclusionesICE)+'</p>'}` : ''}
+${v.envisita.conclusionesLegal ? `<h3>${rptEsc(T.s5legal)}</h3>${bulletList(v.envisita.conclusionesLegal.split('\n').filter(s=>s.trim()))||'<p>'+rptEsc(v.envisita.conclusionesLegal)+'</p>'}` : ''}
+
+<!-- ANNEXES -->
+<h2 class="page-break">${rptEsc(T.annex1)}</h2>
+<p><span class="placeholder">[${isEN?'List documents reviewed during the visit':'Listar los documentos revisados durante la visita'}]</span></p>
+
+<h2>${rptEsc(T.annex2)}</h2>
+<p><span class="placeholder">[${isEN?'Insert layout of the PV Plant':'Insertar layout de la planta FV'}]</span></p>
+
+<h2>${rptEsc(T.annex3)}</h2>
+${(()=>{
+  const fotos = (v.envisita&&v.envisita.fotos)||[];
+  const imgs = fotos.flatMap(f=>(f.imagenes||[]).map(img=>`<img src="${img}" style="width:48%;margin:1%">`));
+  return imgs.length ? `<div style="display:flex;flex-wrap:wrap">${imgs.join('')}</div>`
+    : `<p><span class="placeholder">[${isEN?'Add photos via the app during the visit':'Añadir fotos desde la app durante la visita'}]</span></p>`;
+})()}
+
+<div class="footer">${rptEsc(T.footer)}${new Date().toLocaleDateString('en-GB')}</div>
+</body></html>`;
+
+  // Show in modal iframe
+  const filename = `Report_${safeName(p.nombre)}_${v.fecha||today()}_${lang.toUpperCase()}.html`;
+  document.getElementById('report-title').textContent = filename;
+  window._reportHTML = html;
+  const iframe = document.getElementById('report-iframe');
+  iframe.srcdoc = html;
+  openModal('modal-report');
+  toast(isEN?'Report generated ✓':'Informe generado ✓');
+}
+
+function copyReportHTML(){
+  if(!window._reportHTML) return;
+  navigator.clipboard.writeText(window._reportHTML).then(()=>{
+    toast('HTML copiado ✓ — pégalo en un .html y ábrelo en Word');
+  }).catch(()=>{ toast('Usa el menú de selección del iframe'); });
+}
+
+function showConfirmModal(title, msg, onConfirm){
+  document.getElementById('modal-confirm-title').textContent = title;
+  document.getElementById('modal-confirm-msg').textContent = msg;
+  const btn = document.getElementById('modal-confirm-ok');
+  btn.onclick = () => { closeModal('modal-confirm-delete'); onConfirm(); };
+  openModal('modal-confirm-delete');
+}
+
+async function deleteVisit(){
+  if(!currentVisitId) return;
+  const dateLabel = currentVisit ? formatDate(currentVisit.fecha) : 'esta visita';
+  showConfirmModal(
+    '¿Eliminar visita?',
+    `Se eliminará la visita del ${dateLabel}. Esta acción no se puede deshacer.`,
+    async () => {
+      await dbDel('visitas', currentVisitId);
+      toast('Visita eliminada');
+      showProjectScreen(currentProjectId);
+    }
+  );
+}
+
+async function deleteProject(){
+  showConfirmModal(
+    '¿Eliminar proyecto?',
+    `Se eliminará "${currentProject.nombre}" y todas sus visitas. Esta acción no se puede deshacer.`,
+    async () => {
+      const visitas = await dbGetByIndex('visitas','proyectoId',currentProjectId);
+      for(const v of visitas) await dbDel('visitas', v.id);
+      await dbDel('projects', currentProjectId);
+      navigate('projects');
+      toast('Proyecto eliminado');
+    }
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════════════════════════════ */
+function openModal(id){ document.getElementById(id).classList.add('visible'); }
+function closeModal(id){ document.getElementById(id).classList.remove('visible'); }
+document.addEventListener('click',e=>{ if(e.target.classList.contains('modal-bg')) e.target.classList.remove('visible'); });
+
+/* ══════════════════════════════════════════════════════════════════
+   ACCORDION
+══════════════════════════════════════════════════════════════════ */
+function toggleSection(secId){
+  const sec = document.getElementById(secId);
+  const body = document.getElementById(secId+'-body');
+  const arr  = sec.querySelector('.section-arrow');
+  body.classList.toggle('hidden');
+  arr.classList.toggle('open');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════════════════ */
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('visible'),2200);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THEME
+══════════════════════════════════════════════════════════════════ */
+function openThemeToggle(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  if(!cur || cur==='light'){ document.documentElement.setAttribute('data-theme','dark'); try{localStorage.setItem('gadv-theme','dark')}catch(e){} }
+  else { document.documentElement.setAttribute('data-theme','light'); try{localStorage.setItem('gadv-theme','light')}catch(e){} }
+}
+try{ const t=localStorage.getItem('gadv-theme'); if(t) document.documentElement.setAttribute('data-theme',t); }catch(e){}
+
+function showAbout(){
+  toast('G-Advisory Obra v1.0 · Maqueta · Garrigues');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════════════════════════ */
+/* ── LANG BUTTON ─ */
+let reportLang = 'en';
+function setReportLang(lang, btn){
+  reportLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function formatDate(d){ if(!d) return ''; try{ return new Date(d+'T12:00:00').toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){return d;} }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function safeName(s){ return String(s||'').replace(/[^a-z0-9]/gi,'_').toLowerCase().slice(0,40); }
+function fileToBase64(f){ return new Promise(r=>{const rd=new FileReader();rd.onload=e=>r(e.target.result);rd.readAsDataURL(f);}); }
+
+/* ══════════════════════════════════════════════════════════════════
+   SEED DEMO DATA
+══════════════════════════════════════════════════════════════════ */
+async function seedDemoIfEmpty(){
+  // In Firestore (shared DB), only seed if the demo project doesn't exist yet
+  const demoDoc = await dbGet('projects', 'demo1');
+  if(demoDoc){
+    const demov = await dbGetByIndex('visitas','proyectoId','demo1');
+    if(demov.length) return; // demo fully seeded
+    // else fall through to seed visit data only
+  }
+  if(!demoDoc){
+  // Project doesn't exist yet — create it
+  const p = {
+    id:'demo1', nombre:'Planta FV Casafuerte IV',
+    localizacion:'Burgos, España', potenciaPico:'125 MWp',
+    potenciaNominal:'100 MW', capacidadPOI:'100 MW',
+    estado:'construccion',
+    modulos:{ fabricante:'Jinko Solar', modelo:'Tiger Neo N-Type 72HL4-V', numModulos:222222 },
+    inversores:{ fabricante:'SMA', modelo:'STP 110-60', numInversores:114 },
+    seguidor:{ fabricante:'Soltec', tipo:'1-axis horizontal' },
+    hitos:{ tm:'2025-04-06', cap:'2026-03-10', iceTm:'2025-02-09', iceCap:'2025-12-30' },
+    createdAt: Date.now(), updatedAt: Date.now()
+  };
+  await dbPut('projects', p);
+  } // end if(!demoDoc)
+
+  // Visita demo con datos reales del Excel
+  const v = {
+    id:'visit1', proyectoId:'demo1',
+    fecha:'2025-01-15', hora:'10:00',
+    asistentes:'Juan García (G-Advisory), María López (EPC Contratista), Pedro Ruiz (ICE)',
+    estado:'borrador',
+    previsita:{
+      equipos:[
+        {id:'civil',nombre:'Obra civil',subcontratista:'Excavaciones Norte S.L.',maquinaria:'2 retroexcavadoras, 1 compactadora',numPersonas:12,ingresoObra:'07:30',salidaObra:'17:00'},
+        {id:'seguridad',nombre:'Seguridad',subcontratista:'SecurPlant S.L.',maquinaria:'',numPersonas:3,ingresoObra:'07:00',salidaObra:'19:00'},
+        {id:'hincas',nombre:'  ↳ Hincas',subcontratista:'Montajes Solares S.A.',maquinaria:'1 hincadora',numPersonas:2,ingresoObra:'08:00',salidaObra:'17:00'},
+        {id:'modulos',nombre:'  ↳ Módulos',subcontratista:'Montajes Solares S.A.',maquinaria:'',numPersonas:10,ingresoObra:'08:00',salidaObra:'17:00'},
+        {id:'seguidores',nombre:'  ↳ Seguidores',subcontratista:'Soltec',maquinaria:'',numPersonas:20,ingresoObra:'08:00',salidaObra:'17:00'},
+        {id:'electrico',nombre:'Trabajos eléctricos',subcontratista:'Elec Renovables S.L.',maquinaria:'',numPersonas:8,ingresoObra:'08:00',salidaObra:'17:00'},
+        {id:'mt',nombre:'  ↳ Línea MT',subcontratista:'Elec Renovables S.L.',maquinaria:'1 retroexcavadora',numPersonas:4,ingresoObra:'08:00',salidaObra:'17:00'},
+      ],
+      compras:[
+        {id:'c1',nombre:'Terreno y accesos',comprasPct:1,entregaPct:0.80},
+        {id:'c2',nombre:'Vallado perimetral y puertas',comprasPct:1,entregaPct:1.00},
+        {id:'c3',nombre:'Sistema vigilancia CCTV',comprasPct:1,entregaPct:0.54},
+        {id:'c4',nombre:'Centro control y mantenimiento',comprasPct:1,entregaPct:0.00},
+        {id:'c5',nombre:'Hincas',comprasPct:1,entregaPct:1.00},
+        {id:'c6',nombre:'Seguidores solares',comprasPct:1,entregaPct:1.00},
+        {id:'c7',nombre:'Módulos fotovoltaicos',comprasPct:1,entregaPct:0.19},
+        {id:'c8',nombre:'Inversores',comprasPct:1,entregaPct:0.85},
+        {id:'c9',nombre:'Transformadores STS',comprasPct:1,entregaPct:1.00},
+        {id:'c10',nombre:'Cable DC',comprasPct:1,entregaPct:0.10},
+        {id:'c11',nombre:'Cable AC',comprasPct:1,entregaPct:0.85},
+        {id:'c12',nombre:'Cable MT',comprasPct:1,entregaPct:0.75},
+        {id:'c13',nombre:'SCADA',comprasPct:1,entregaPct:0.00},
+        {id:'c14',nombre:'Estación meteorológica',comprasPct:1,entregaPct:0.00},
+        {id:'c15',nombre:'Zanjas exteriores MT',comprasPct:1,entregaPct:0.33},
+        {id:'c16',nombre:'Centro de seccionamiento',comprasPct:1,entregaPct:0.67},
+      ],
+      civil:[
+        {id:'3.1',nombre:'Terreno y accesos',inicioContractual:'2024-07-01',finalContractual:'2025-05-27',pctContractual:0.80,pctActual:0.75},
+        {id:'3.2',nombre:'Vallado perimetral y puertas',inicioContractual:'2024-07-06',finalContractual:'2024-09-09',pctContractual:1.00,pctActual:1.00},
+        {id:'3.3',nombre:'Sistema vigilancia CCTV',inicioContractual:'2024-08-21',finalContractual:'2025-05-02',pctContractual:0.80,pctActual:0.72},
+        {id:'3.4',nombre:'Centro control y mantenimiento',inicioContractual:'2025-03-13',finalContractual:'2025-06-17',pctContractual:0.87,pctActual:1.00},
+        {id:'3.9',nombre:'Centros de transformación (STS)',inicioContractual:'2024-10-01',finalContractual:'2025-07-06',pctContractual:0.80,pctActual:0.78},
+        {id:'3.10',nombre:'Cableado BT y MT',inicioContractual:'2024-10-01',finalContractual:'2025-07-06',pctContractual:0.80,pctActual:0.78},
+        {id:'3.11',nombre:'SCADA y est. meteorológicas',inicioContractual:'2025-04-02',finalContractual:'2025-07-03',pctContractual:0.58,pctActual:0.65},
+        {id:'4.1',nombre:'Zanjas exteriores MT',inicioContractual:'2024-11-11',finalContractual:'2025-07-06',pctContractual:0.84,pctActual:0.75},
+        {id:'4.2',nombre:'Centro de seccionamiento',inicioContractual:'2024-11-11',finalContractual:'2025-07-06',pctContractual:0.84,pctActual:0.75},
+      ],
+      mecanica:[
+        {id:'3.5',nombre:'Hincas',inicioContractual:'2025-04-02',finalContractual:'2025-07-03',pctContractual:0.58,pctActual:0.65},
+        {id:'3.6',nombre:'Seguidores solares',inicioContractual:'2024-07-01',finalContractual:'2025-04-08',pctContractual:1.00,pctActual:0.94},
+        {id:'3.7',nombre:'Módulos fotovoltaicos',inicioContractual:'2025-01-13',finalContractual:'2025-06-03',pctContractual:0.99,pctActual:0.85},
+        {id:'3.8',nombre:'Inversores/transformadores',inicioContractual:'2024-12-12',finalContractual:'2025-07-06',pctContractual:0.80,pctActual:0.68},
+        {id:'3.9b',nombre:'Centros transformación (STS)',inicioContractual:'2024-10-01',finalContractual:'2025-07-06',pctContractual:0.80,pctActual:0.78},
+        {id:'3.11b',nombre:'SCADA y est. meteorológicas',inicioContractual:'2025-04-02',finalContractual:'2025-07-03',pctContractual:0.58,pctActual:0.65},
+        {id:'4.2b',nombre:'Centro de seccionamiento',inicioContractual:'2024-11-11',finalContractual:'2025-07-06',pctContractual:0.84,pctActual:0.75},
+      ],
+      electrica:[
+        {id:'E.1',nombre:'CCTV',inicioContractual:'2024-08-21',finalContractual:'2025-05-02',pctContractual:0.80,pctActual:0.72},
+        {id:'E.2',nombre:'Cableado int. BT y MT',inicioContractual:'2024-09-03',finalContractual:'2025-04-10',pctContractual:0.76,pctActual:0.86},
+        {id:'E.3',nombre:'SCADA y est. meteorológicas',inicioContractual:'2025-04-02',finalContractual:'2025-07-03',pctContractual:0.58,pctActual:0.65},
+        {id:'E.4',nombre:'Centros transformación (STS)',inicioContractual:'2024-10-01',finalContractual:'2025-07-06',pctContractual:0.80,pctActual:0.78},
+        {id:'E.5',nombre:'Cableado y zanjas ext. MT',inicioContractual:'2024-10-28',finalContractual:'2025-04-22',pctContractual:0.70,pctActual:0.32},
+        {id:'E.6',nombre:'Centro de seccionamiento',inicioContractual:'2024-11-11',finalContractual:'2025-07-06',pctContractual:0.84,pctActual:0.75},
+      ],
+    },
+    envisita:{
+      equipos:[
+        {id:'civil',nombre:'Obra civil',maquinaria:'',numPersonas:'',ratio:'',comentarios:''},
+        {id:'seguridad',nombre:'Seguridad',maquinaria:'',numPersonas:'',ratio:'',comentarios:''},
+        {id:'hincas',nombre:'  ↳ Hincas',maquinaria:'1 hincadora',numPersonas:2,ratio:'100 hincas/día',comentarios:''},
+        {id:'modulos',nombre:'  ↳ Módulos',maquinaria:'',numPersonas:10,ratio:'100 módulos/persona/día',comentarios:''},
+        {id:'seguidores',nombre:'  ↳ Seguidores',maquinaria:'',numPersonas:20,ratio:'1 tracker/2 personas/día',comentarios:''},
+        {id:'electrico',nombre:'Trabajos eléctricos',maquinaria:'',numPersonas:'',ratio:'',comentarios:''},
+        {id:'mt',nombre:'  ↳ Línea MT',maquinaria:'1 retroexcavadora',numPersonas:4,ratio:'Apertura: 100m/día. Tendido: 200m/día',comentarios:''},
+      ],
+      comentariosCompras:[
+        {id:'c1',nombre:'Terreno y accesos',comentarios:''},
+        {id:'c2',nombre:'Vallado perimetral y puertas',comentarios:'Problemas de entrega del transportista. Resuelto.'},
+        {id:'c3',nombre:'Sistema vigilancia CCTV',comentarios:''},
+        {id:'c4',nombre:'Centro control y mantenimiento',comentarios:''},
+        {id:'c5',nombre:'Hincas',comentarios:''},
+        {id:'c6',nombre:'Seguidores solares',comentarios:''},
+        {id:'c7',nombre:'Módulos fotovoltaicos',comentarios:'Se retrasa la entrega por los retrasos en el transporte marítimo. Nuevo ETA enero 2025.'},
+        {id:'c8',nombre:'Inversores',comentarios:'Almacenados en Holanda. Se entrega cuando el EPC lo solicite.'},
+        {id:'c9',nombre:'Transformadores STS',comentarios:''},
+        {id:'c10',nombre:'Cable DC',comentarios:'Se retrasa entrega un mes por problemas de fabricación.'},
+        {id:'c11',nombre:'Cable AC',comentarios:''},
+        {id:'c12',nombre:'Cable MT',comentarios:''},
+        {id:'c13',nombre:'SCADA',comentarios:''},
+        {id:'c14',nombre:'Estación meteorológica',comentarios:''},
+        {id:'c15',nombre:'Zanjas exteriores MT',comentarios:''},
+        {id:'c16',nombre:'Centro de seccionamiento',comentarios:''},
+      ],
+      comentariosCivil:[
+        {id:'3.1',comentarios:'El acondicionamiento de los viales interiores está en progreso. Pendiente zona norte.'},
+        {id:'3.2',comentarios:'No terminada, le falta un acceso. El EPC confirma que estará completado esta semana.'},
+        {id:'3.3',comentarios:''},
+        {id:'3.4',comentarios:''},
+        {id:'3.9',comentarios:'Se verifica en visita el correcto montaje.'},
+        {id:'3.10',comentarios:'En la visita se ha visto que ya está completado en sector A y B. Pendiente sector C.'},
+        {id:'3.11',comentarios:''},
+        {id:'4.1',comentarios:''},
+        {id:'4.2',comentarios:''},
+      ],
+      comentariosMecanica:[
+        {id:'3.5',comentarios:''},
+        {id:'3.6',comentarios:'En la visita se ha visto que ya está completado en sector A. Pendiente ajuste de inclinación en B.'},
+        {id:'3.7',comentarios:''},
+        {id:'3.8',comentarios:'Almacenados en Holanda. Se entrega cuando el EPC lo solicite.'},
+        {id:'3.9b',comentarios:''},
+        {id:'3.11b',comentarios:''},
+        {id:'4.2b',comentarios:''},
+      ],
+      comentariosElectrica:[
+        {id:'E.1',comentarios:''},
+        {id:'E.2',comentarios:''},
+        {id:'E.3',comentarios:''},
+        {id:'E.4',comentarios:''},
+        {id:'E.5',comentarios:''},
+        {id:'E.6',comentarios:''},
+      ],
+      conclusionesPV:'La obra avanza conforme al cronograma contractual con ligeros retrasos en módulos y accesos norte. El EPC confirma recuperación del plazo antes de TM (06/04/2025). Se identifican como riesgos principales: (i) retraso en entrega de módulos FV y (ii) pendiente de cierre acceso norte del vallado.',
+      conclusionesICE:'La terminación mecánica del ICE (09/02/2025) presenta riesgo de demora de ~3 semanas según progreso actual de hincas y seguidores. Se requiere aumentar el ratio de montaje en sector B.',
+      conclusionesLegal:'Pendiente de obtención de la autorización de explotación provisional. El EPC confirma que la solicitud está presentada ante la Delegación Territorial.',
+    },
+    createdAt: Date.now(), updatedAt: Date.now()
+  };
+  await dbPut('visitas', v);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════════════ */
+initApp().then(async ()=>{
+  await seedDemoIfEmpty();
+  await loadProjectsList();
+}).catch(e=>{
+  console.error(e);
+  document.getElementById('projects-list').innerHTML=`<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Error de conexión</div><p class="text-muted">Comprueba tu conexión a internet y que Firebase esté configurado</p></div>`;
+});
+</script>
