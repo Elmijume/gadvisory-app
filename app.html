@@ -804,7 +804,7 @@ img { max-width: 100%; }
     <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--header);color:#fff;flex-shrink:0">
       <button onclick="closeModal('modal-report')" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:4px 8px">✕</button>
       <span style="font-weight:600;font-size:15px;flex:1" id="report-title">Informe</span>
-      <button onclick="downloadReportHTML()" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:8px 14px;border-radius:6px">⬇️ Descargar</button>
+      <button onclick="downloadReportHTML()" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:8px 14px;border-radius:6px">⬇️ Descargar .docx</button>
     </div>
     <iframe id="report-iframe" style="flex:1;border:none;width:100%;background:#fff"></iframe>
   </div>
@@ -833,6 +833,7 @@ img { max-width: 100%; }
 <!-- Firebase SDK (compat v9) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════
    DATA CONSTANTS
@@ -1534,11 +1535,10 @@ async function _buildAndShowReport(p, v){
   };
 
   const css = `
-    @page{margin:2.5cm 2.5cm 2.5cm 2.5cm;mso-page-orientation:portrait}
-    body{font-family:Arial,sans-serif;font-size:11pt;color:#1C2B27;
-         margin:2.5cm 2.5cm;mso-margin-top-alt:2.5cm;mso-margin-bottom-alt:2.5cm;
-         mso-margin-left-alt:2.5cm;mso-margin-right-alt:2.5cm}
-    div.Section1{page:Section1}
+    @page Section1{size:21.0cm 29.7cm;margin:2.0cm 2.0cm 2.0cm 2.0cm;
+      mso-page-orientation:portrait;mso-paper-source:0}
+    div.Section1{page:Section1;mso-section-properties:"\0D\0A size:21.0cm 29.7cm;\0D\0A margin:2.0cm 2.0cm 2.0cm 2.0cm;"}
+    body{font-family:Arial,sans-serif;font-size:11pt;color:#1C2B27;margin:0;padding:0}
     .cover{text-align:center;padding:40pt 0 30pt}
     .cover-logo{font-size:22pt;font-weight:700;color:#1A3530;letter-spacing:1px}
     .cover-logo span{color:#16968D}
@@ -1565,7 +1565,7 @@ async function _buildAndShowReport(p, v){
     .placeholder{background:#FFF3CD;padding:0 3px;border-radius:2px}
     .page-break{page-break-before:always;mso-break-type:page-break}
     .footer{font-size:8pt;color:#7A9E91;margin-top:18pt;border-top:1px solid #D8E5DF;padding-top:6pt;text-align:center}
-    @media print{@page{margin:2.5cm}body{margin:0}}
+    @media print{@page{size:A4;margin:2.0cm}}
   `;
 
   // Helper: find comment by id
@@ -1615,8 +1615,20 @@ async function _buildAndShowReport(p, v){
 <meta name="ProgId" content="Word.Document">
 <meta name="Generator" content="Microsoft Word 15">
 <!--[if gte mso 9]><xml>
-<w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom>
-<w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
+<w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+</w:WordDocument>
+<o:DocumentProperties>
+  <o:Version>16</o:Version>
+</o:DocumentProperties>
+</xml>
+<xml><w:LatentStyles DefLockedState="false" DefUnhideWhenUsed="false"
+DefSemiHidden="false" DefQFormat="false" DefPriority="99" LatentStyleCount="376">
+</w:LatentStyles></xml><![endif]-->
+<style>@page Section1{size:21.0cm 29.7cm;margin:2.0cm 2.0cm 2.0cm 2.0cm;
+  mso-header-margin:.5cm;mso-footer-margin:.5cm;mso-paper-source:0}</style>
 <title>${rptEsc(T.title)} — ${rptEsc(p.nombre)}</title>
 <style>${css}</style></head><body><div class="Section1">
 
@@ -1737,32 +1749,297 @@ ${(()=>{
 </div></body></html>`;
 
   // Show in modal iframe
-  const filename = `Report_${safeName(p.nombre)}_${v.fecha||today()}_${lang.toUpperCase()}.html`;
-  document.getElementById('report-title').textContent = filename;
+  const filename = `Report_${safeName(p.nombre)}_${v.fecha||today()}_${lang.toUpperCase()}`;
+  document.getElementById('report-title').textContent = filename + '.docx';
   window._reportHTML = html;
   window._reportFilename = filename;
+  window._reportData = { p, v, T, isEN, lang };
   const iframe = document.getElementById('report-iframe');
   iframe.srcdoc = html;
   openModal('modal-report');
   toast(isEN?'Report generated ✓':'Informe generado ✓');
 }
 
-function downloadReportHTML(){
-  if(!window._reportHTML) return;
+async function downloadReportHTML(){
+  if(!window._reportData) { toast('Genera el informe primero'); return; }
   try {
-    const blob = new Blob([window._reportHTML], {type:'text/html;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = window._reportFilename || 'informe.html';
-    document.body.appendChild(a); a.click();
-    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1500);
-    toast('Descargando ✓ — ábrelo con Word');
+    await generateDocx(window._reportData);
   } catch(e) {
-    // Fallback: abrir en nueva pestaña → Ctrl+S para guardar
-    const w = window.open('','_blank');
-    if(w){ w.document.write(window._reportHTML); w.document.close(); toast('Abierto en nueva pestaña — guárdalo con Ctrl+S'); }
-    else { toast('Permite ventanas emergentes e inténtalo de nuevo'); }
+    console.error('docx error', e);
+    toast('Error generando .docx: ' + e.message);
   }
+}
+
+async function generateDocx(rd){
+  const { Document, Paragraph, TextRun, Table, TableRow, TableCell,
+          HeadingLevel, AlignmentType, WidthType, BorderStyle,
+          PageSize, PageOrientation, Packer, ShadingType,
+          convertInchesToTwip, Header, Footer } = window.docx;
+
+  const TEAL = '16968D'; const DARK = '1A3530'; const GRAY = 'F2F5F4';
+  const BORDER_COLOR = 'D8E5DF';
+  const PT = (n) => n * 20; // half-points to twips (20 twips per pt for font)
+  const CM = (n) => Math.round(n * 567); // cm to twips
+
+  const cellBorder = { style: BorderStyle.SINGLE, size: 1, color: BORDER_COLOR };
+  const borders = { top: cellBorder, bottom: cellBorder, left: cellBorder, right: cellBorder };
+
+  const mkText = (text, opts={}) => new TextRun({
+    text: String(text||''), font: 'Arial', size: PT(opts.size||10.5),
+    bold: opts.bold||false, italics: opts.italic||false,
+    color: opts.color||'000000',
+  });
+
+  const mkPara = (children, opts={}) => new Paragraph({
+    children: Array.isArray(children) ? children : [mkText(children, opts)],
+    alignment: opts.align || AlignmentType.LEFT,
+    heading: opts.heading || undefined,
+    spacing: { before: CM(opts.before||0)*0.5, after: CM(opts.after||0.1)*0.5 },
+  });
+
+  const mkH2 = (text) => new Paragraph({
+    children: [new TextRun({ text, font: 'Arial', size: PT(13), bold: true, color: DARK })],
+    heading: HeadingLevel.HEADING_2,
+    spacing: { before: 280, after: 80 },
+    border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: TEAL } },
+  });
+
+  const mkH3 = (text) => new Paragraph({
+    children: [new TextRun({ text, font: 'Arial', size: PT(11), bold: true, color: TEAL })],
+    heading: HeadingLevel.HEADING_3,
+    spacing: { before: 180, after: 60 },
+  });
+
+  const mkH4 = (text) => new Paragraph({
+    children: [new TextRun({ text, font: 'Arial', size: PT(10.5), bold: true, color: DARK })],
+    heading: HeadingLevel.HEADING_4,
+    spacing: { before: 120, after: 40 },
+  });
+
+  const mkCaption = (text) => new Paragraph({
+    children: [new TextRun({ text, font: 'Arial', size: PT(9.5), italics: true, color: '4A6359' })],
+    spacing: { before: 40, after: 80 },
+  });
+
+  const mkBullet = (text) => new Paragraph({
+    children: [new TextRun({ text, font: 'Arial', size: PT(10.5) })],
+    bullet: { level: 0 },
+    spacing: { before: 40, after: 40 },
+  });
+
+  const mkTableRow = (cells, isHeader=false) => new TableRow({
+    tableHeader: isHeader,
+    children: cells.map((c, i) => new TableCell({
+      children: [new Paragraph({
+        children: [new TextRun({
+          text: String(c||''), font: 'Arial',
+          size: PT(isHeader ? 9.5 : 9.5),
+          bold: isHeader,
+          color: isHeader ? 'FFFFFF' : '1C2B27',
+        })],
+        spacing: { before: 60, after: 60 },
+      })],
+      shading: isHeader
+        ? { fill: TEAL, type: ShadingType.CLEAR, color: TEAL }
+        : undefined,
+      borders,
+      margins: { top: 60, bottom: 60, left: 80, right: 80 },
+    }))
+  });
+
+  const mkTable = (headers, rows) => new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      mkTableRow(headers, true),
+      ...rows.map(r => mkTableRow(r, false)),
+    ],
+  });
+
+  const { p, v, T, isEN, lang } = rd;
+  const h = p.hitos||{};
+  const rD = (d) => d ? new Date(d).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
+  const rP = (n) => (n!=null && n!=='') ? String(n)+'%' : '—';
+  const comText = (arr, id) => ((arr||[]).find(c=>c.id===id)||{}).comentarios||'';
+
+  const constrRows = (rows, commentArr) => rows.map(r => [
+    r.nombre, rD(r.inicioContractual), rD(r.finalContractual),
+    rP(r.pctContractual), rP(r.pctActual), comText(commentArr, r.id)
+  ]);
+
+  const supplyBullets = (v.previsita.compras||[])
+    .filter(r => comText(v.envisita.comentariosCompras, r.id))
+    .map(r => `${r.nombre}: ${comText(v.envisita.comentariosCompras, r.id)}`);
+  const workforceBullets = (v.envisita.equipos||[]).filter(e=>e.comentarios).map(e=>`${e.nombre}: ${e.comentarios}`);
+
+  const coverChildren = [
+    new Paragraph({ spacing: { before: 0, after: CM(2) }, children: [] }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [new TextRun({ text: 'G-Advisory', font: 'Arial', size: PT(22), bold: true, color: DARK })],
+      spacing: { after: 160 },
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [new TextRun({ text: T.title, font: 'Arial', size: PT(17), bold: true, color: DARK })],
+      spacing: { after: 80 },
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [new TextRun({ text: T.subtitle, font: 'Arial', size: PT(13), color: TEAL })],
+      spacing: { after: 200 },
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [new TextRun({ text: p.nombre||'', font: 'Arial', size: PT(12), color: '4A6359' })],
+      spacing: { after: 120 },
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [
+        new TextRun({ text: `${T.visitDate}: `, font: 'Arial', size: PT(10) }),
+        new TextRun({ text: rD(v.fecha), font: 'Arial', size: PT(10), bold: true }),
+      ],
+      spacing: { after: 60 },
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [
+        new TextRun({ text: `${T.attendees}: `, font: 'Arial', size: PT(10) }),
+        new TextRun({ text: v.asistentes||'—', font: 'Arial', size: PT(10), bold: true }),
+      ],
+      spacing: { after: 160 },
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [new TextRun({ text: `DRAFT — ${new Date().toLocaleDateString('en-GB')}`, font: 'Arial', size: PT(9), color: 'AAAAAA' })],
+    }),
+    new Paragraph({ children: [], pageBreakBefore: true }),
+  ];
+
+  const introText = isEN
+    ? `The PV Plant is located in the municipality of ${p.localizacion||'[location]'}. This report summarises the construction monitoring visit carried out on ${rD(v.fecha)} and reflects the construction status at the date of the visit. The report has been prepared by G-Advisory based on information provided during the site visit and documentation reviewed from the EPC contractor.`
+    : `La planta FV está ubicada en el municipio de ${p.localizacion||'[localización]'}. Este informe resume la visita de seguimiento de construcción llevada a cabo el ${rD(v.fecha)} y refleja el estado de construcción en la fecha de la visita. El informe ha sido elaborado por G-Advisory con base en la información proporcionada durante la visita a obra y la documentación revisada del contratista EPC.`;
+
+  const s3intro = isEN
+    ? `The following section presents the construction status of the PV Plant and the PEI as observed during the visit on ${rD(v.fecha)}. The information is based on data provided by the EPC contractor and verified on site.`
+    : `La siguiente sección presenta el estado de construcción de la planta FV y el PEI tal como se observó durante la visita del ${rD(v.fecha)}. La información se basa en datos proporcionados por el contratista EPC y verificados in situ.`;
+
+  const s4text = isEN
+    ? 'The CEI (external connection infrastructure) comprises the underground HV line, the metering centre, the overhead HV line and the transformation substation (SET). [Insert CEI status comments here]'
+    : 'El CEI (infraestructura de conexión exterior) comprende la línea subterránea AT, el centro de medida, la línea aérea AT y la subestación de transformación (SET). [Insertar aquí comentarios sobre el estado del CEI]';
+
+  const bodyChildren = [
+    ...coverChildren,
+    mkH2(T.s1),
+    mkPara(introText),
+
+    mkH2(T.s2),
+    mkH3(T.s2t1),
+    mkTable([T.param, T.value],[
+      [T.status, p.estado||'—'], [T.location, p.localizacion||'—'],
+      [T.peakPow, p.potenciaPico||'—'], [T.nomPow, p.potenciaNominal||'—'],
+      [T.poi, p.capacidadPOI||'—'],
+    ]),
+    mkPara(''),
+    mkH3(T.s2t2),
+    mkTable([T.param, T.value],[
+      [T.modMfr, (p.modulos||{}).fabricante||'—'], [T.modModel, (p.modulos||{}).modelo||'—'],
+      [T.modQty, String((p.modulos||{}).numModulos||'—')],
+      [T.invMfr, (p.inversores||{}).fabricante||'—'], [T.invModel, (p.inversores||{}).modelo||'—'],
+      [T.invQty, String((p.inversores||{}).numInversores||'—')],
+      [T.trackerMfr, (p.seguidor||{}).fabricante||'—'], [T.trackerType, (p.seguidor||{}).tipo||'—'],
+    ]),
+    mkPara(''),
+    mkH3(T.s2t3),
+    mkTable([T.milestone, T.epcDate],[[T.tm, rD(h.tm)],[T.cap, rD(h.cap)]]),
+    mkPara(''),
+    mkH3(T.s2t4),
+    mkTable([T.milestone, T.iceDate],[[T.tm, rD(h.iceTm)],[T.cap, rD(h.iceCap)]]),
+    mkPara(''),
+
+    mkH2(T.s3),
+    mkPara(s3intro),
+    mkH3(T.s31),
+    mkCaption(T.s31t),
+    mkTable([T.task, T.subcon, T.machinery, T.people, T.entry, T.exit_],
+      (v.previsita.equipos||[]).filter(e=>e.subcontratista||e.maquinaria||e.numPersonas)
+      .map(e=>[e.nombre, e.subcontratista||'', e.maquinaria||'', String(e.numPersonas||''), e.ingresoObra||'', e.salidaObra||''])
+    ),
+    mkPara(''),
+    ...((v.envisita.equipos||[]).filter(e=>e.numPersonas||e.ratio||e.comentarios).length ? [
+      mkCaption(isEN?'Observed workforce and output rates during the visit:':'Personal y rendimiento observados durante la visita:'),
+      mkTable([T.task, T.people, T.ratio, T.comments],
+        (v.envisita.equipos||[]).filter(e=>e.numPersonas||e.ratio||e.comentarios)
+        .map(e=>[e.nombre, String(e.numPersonas||''), e.ratio||'', e.comentarios||''])
+      ),
+      mkPara(''),
+    ] : []),
+    ...workforceBullets.map(mkBullet),
+
+    mkH3(T.s32),
+    mkCaption(T.s32t),
+    mkTable([T.activity, T.pctPurch, T.pctDeliv, T.comments],
+      (v.previsita.compras||[]).map(r=>[r.nombre, rP(r.comprasPct), rP(r.entregaPct), comText(v.envisita.comentariosCompras, r.id)])
+    ),
+    mkPara(''),
+    ...supplyBullets.map(mkBullet),
+
+    mkH3(T.s33),
+    mkH4(T.s331), mkCaption(T.s331t),
+    mkTable([T.task, T.startDate, T.endDate, T.pctCont, T.pctActual, T.comments], constrRows(v.previsita.civil||[], v.envisita.comentariosCivil)),
+    mkPara(''),
+    mkH4(T.s332), mkCaption(T.s332t),
+    mkTable([T.task, T.startDate, T.endDate, T.pctCont, T.pctActual, T.comments], constrRows(v.previsita.mecanica||[], v.envisita.comentariosMecanica)),
+    mkPara(''),
+    mkH4(T.s333), mkCaption(T.s333t),
+    mkTable([T.task, T.startDate, T.endDate, T.pctCont, T.pctActual, T.comments], constrRows(v.previsita.electrica||[], v.envisita.comentariosElectrica)),
+    mkPara(''),
+
+    mkH2(T.s4), mkPara(s4text),
+
+    mkH2(T.s5),
+    ...(v.envisita.conclusionesPV ? [mkH3(T.s5pv), ...v.envisita.conclusionesPV.split('\n').filter(s=>s.trim()).map(mkBullet)] : []),
+    ...(v.envisita.conclusionesICE ? [mkH3(T.s5ice), ...v.envisita.conclusionesICE.split('\n').filter(s=>s.trim()).map(mkBullet)] : []),
+    ...(v.envisita.conclusionesLegal ? [mkH3(T.s5legal), ...v.envisita.conclusionesLegal.split('\n').filter(s=>s.trim()).map(mkBullet)] : []),
+
+    new Paragraph({ children: [], pageBreakBefore: true }),
+    mkH2(T.annex1),
+    mkPara(isEN?'[List documents reviewed during the visit]':'[Listar los documentos revisados durante la visita]'),
+    mkH2(T.annex2),
+    mkPara(isEN?'[Insert layout of the PV Plant]':'[Insertar layout de la planta FV]'),
+    mkH2(T.annex3),
+    mkPara(isEN?'[Add photos via the app during the visit]':'[Añadir fotos desde la app durante la visita]'),
+
+    new Paragraph({
+      children: [new TextRun({ text: `${T.footer}${new Date().toLocaleDateString('en-GB')}`, font: 'Arial', size: PT(8), color: '7A9E91' })],
+      alignment: AlignmentType.CENTER,
+      border: { top: { style: BorderStyle.SINGLE, size: 1, color: 'D8E5DF' } },
+      spacing: { before: 240 },
+    }),
+  ];
+
+  const doc = new Document({
+    sections: [{
+      properties: {
+        page: {
+          size: { width: CM(21), height: CM(29.7), orientation: PageOrientation.PORTRAIT },
+          margin: { top: CM(2), right: CM(2), bottom: CM(2), left: CM(2) },
+        },
+      },
+      children: bodyChildren,
+    }],
+  });
+
+  const blob = await Packer.toBlob(doc);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const fname = window._reportFilename
+    ? window._reportFilename.replace(/\.html$/i, '.docx')
+    : 'informe.docx';
+  a.href = url; a.download = fname;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 2000);
+  toast('⬇️ Descargando .docx ✓');
 }
 
 function showConfirmModal(title, msg, onConfirm){
