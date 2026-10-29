@@ -833,7 +833,6 @@ img { max-width: 100%; }
 <!-- Firebase SDK (compat v9) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════
    DATA CONSTANTS
@@ -1760,8 +1759,30 @@ ${(()=>{
   toast(isEN?'Report generated ✓':'Informe generado ✓');
 }
 
+async function loadDocxLib(){
+  if(window.docx) return true;
+  const urls = [
+    'https://unpkg.com/docx@8.5.0/build/index.js',
+    'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js',
+  ];
+  for(const url of urls){
+    const ok = await new Promise(res=>{
+      const s = document.createElement('script');
+      s.src = url;
+      s.onload = ()=>res(true);
+      s.onerror = ()=>res(false);
+      document.head.appendChild(s);
+    });
+    if(ok && window.docx) return true;
+  }
+  return false;
+}
+
 async function downloadReportHTML(){
   if(!window._reportData) { toast('Genera el informe primero'); return; }
+  toast('Preparando .docx...');
+  const ok = await loadDocxLib();
+  if(!ok){ toast('No se pudo cargar la librería. Comprueba tu conexión.'); return; }
   try {
     await generateDocx(window._reportData);
   } catch(e) {
