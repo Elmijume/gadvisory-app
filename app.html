@@ -1534,7 +1534,11 @@ async function _buildAndShowReport(p, v){
   };
 
   const css = `
-    body{font-family:Arial,sans-serif;font-size:11pt;color:#1C2B27;margin:2cm 2.5cm}
+    @page{margin:2.5cm 2.5cm 2.5cm 2.5cm;mso-page-orientation:portrait}
+    body{font-family:Arial,sans-serif;font-size:11pt;color:#1C2B27;
+         margin:2.5cm 2.5cm;mso-margin-top-alt:2.5cm;mso-margin-bottom-alt:2.5cm;
+         mso-margin-left-alt:2.5cm;mso-margin-right-alt:2.5cm}
+    div.Section1{page:Section1}
     .cover{text-align:center;padding:40pt 0 30pt}
     .cover-logo{font-size:22pt;font-weight:700;color:#1A3530;letter-spacing:1px}
     .cover-logo span{color:#16968D}
@@ -1549,17 +1553,19 @@ async function _buildAndShowReport(p, v){
     h4{font-size:10.5pt;font-weight:700;color:#1C2B27;margin-top:8pt;margin-bottom:2pt}
     p{margin:0 0 6pt;font-size:10.5pt;line-height:1.5}
     .caption{font-size:9.5pt;font-style:italic;color:#4A6359;margin:2pt 0 6pt}
-    table{border-collapse:collapse;width:100%;margin-bottom:8pt;font-size:9.5pt}
-    th{background:#16968D;color:#fff;padding:5px 8px;text-align:left;font-weight:600}
+    table{border-collapse:collapse;width:100%;margin-bottom:8pt;font-size:9.5pt;
+          mso-table-lspace:0pt;mso-table-rspace:0pt}
+    th{background:#16968D;color:#fff;padding:5px 8px;text-align:left;font-weight:600;
+       mso-background-source:auto;mso-pattern:auto}
     td{padding:4px 8px;border:1px solid #D8E5DF;vertical-align:top}
     tr:nth-child(even) td{background:#F2F5F4}
     .highlight{background:#E8F5F0!important;font-weight:600}
     ul{margin:4pt 0 8pt;padding-left:18pt}
     ul li{margin-bottom:3pt;font-size:10.5pt;line-height:1.5}
     .placeholder{background:#FFF3CD;padding:0 3px;border-radius:2px}
-    .page-break{page-break-before:always}
+    .page-break{page-break-before:always;mso-break-type:page-break}
     .footer{font-size:8pt;color:#7A9E91;margin-top:18pt;border-top:1px solid #D8E5DF;padding-top:6pt;text-align:center}
-    @media print{body{margin:1.5cm 2cm}}
+    @media print{@page{margin:2.5cm}body{margin:0}}
   `;
 
   // Helper: find comment by id
@@ -1600,9 +1606,19 @@ async function _buildAndShowReport(p, v){
     .filter(r => comText(v.envisita.comentariosCompras, r.id))
     .map(r=>`${r.nombre}: ${comText(v.envisita.comentariosCompras, r.id)}`);
 
-  const html = `<!DOCTYPE html><html lang="${lang}"><head><meta charset="UTF-8">
+  const html = `<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40"
+      lang="${lang}">
+<head><meta charset="UTF-8">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 15">
+<!--[if gte mso 9]><xml>
+<w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
 <title>${rptEsc(T.title)} — ${rptEsc(p.nombre)}</title>
-<style>${css}</style></head><body>
+<style>${css}</style></head><body><div class="Section1">
 
 <!-- COVER PAGE -->
 <div class="cover">
@@ -1718,7 +1734,7 @@ ${(()=>{
 })()}
 
 <div class="footer">${rptEsc(T.footer)}${new Date().toLocaleDateString('en-GB')}</div>
-</body></html>`;
+</div></body></html>`;
 
   // Show in modal iframe
   const filename = `Report_${safeName(p.nombre)}_${v.fecha||today()}_${lang.toUpperCase()}.html`;
