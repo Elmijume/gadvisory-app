@@ -1724,6 +1724,7 @@ ${(()=>{
   const filename = `Report_${safeName(p.nombre)}_${v.fecha||today()}_${lang.toUpperCase()}.html`;
   document.getElementById('report-title').textContent = filename;
   window._reportHTML = html;
+  window._reportFilename = filename;
   const iframe = document.getElementById('report-iframe');
   iframe.srcdoc = html;
   openModal('modal-report');
@@ -1731,14 +1732,21 @@ ${(()=>{
 }
 
 function downloadReportHTML(){
-  if(!window._reportHTML || !window._reportFilename) return;
-  const blob = new Blob([window._reportHTML], {type:'text/html;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = window._reportFilename;
-  document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1000);
-  toast('Descargando... ábrelo con Word ✓');
+  if(!window._reportHTML) return;
+  try {
+    const blob = new Blob([window._reportHTML], {type:'text/html;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = window._reportFilename || 'informe.html';
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1500);
+    toast('Descargando ✓ — ábrelo con Word');
+  } catch(e) {
+    // Fallback: abrir en nueva pestaña → Ctrl+S para guardar
+    const w = window.open('','_blank');
+    if(w){ w.document.write(window._reportHTML); w.document.close(); toast('Abierto en nueva pestaña — guárdalo con Ctrl+S'); }
+    else { toast('Permite ventanas emergentes e inténtalo de nuevo'); }
+  }
 }
 
 function showConfirmModal(title, msg, onConfirm){
