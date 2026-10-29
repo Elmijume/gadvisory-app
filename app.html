@@ -20,9 +20,9 @@
   --surface: #FFFFFF;
   --surface2: #F7FAF8;
   --border: #D8E5DF;
-  --text: #1C2B27;
-  --text2: #4A6359;
-  --text3: #7A9E91;
+  --text: #111E1B;
+  --text2: #2E4E45;
+  --text3: #5A7E72;
   --danger: #C0392B;
   --warn: #D4820A;
   --shadow: 0 1px 4px rgba(22,50,44,.08), 0 4px 16px rgba(22,50,44,.05);
@@ -58,13 +58,13 @@
 body {
   margin: 0; font-family: 'DM Sans', system-ui, sans-serif;
   background: var(--bg); color: var(--text);
-  font-size: 15px; line-height: 1.5;
+  font-size: 16px; line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   padding-bottom: max(72px, calc(56px + env(safe-area-inset-bottom,0px)));
 }
 button { font-family: inherit; cursor: pointer; border: none; background: none; }
 input, textarea, select {
-  font-family: inherit; font-size: 14px; color: var(--text);
+  font-family: inherit; font-size: 16px; color: var(--text);
   background: var(--surface); border: 1.5px solid var(--border);
   border-radius: var(--r-sm); padding: 8px 12px;
   width: 100%; outline: none; transition: border-color .15s;
@@ -1124,13 +1124,37 @@ async function createVisit(){
     },
     createdAt: Date.now(), updatedAt: Date.now()
   };
-  // inherit numeric values from last visit
-  if(last){
+  // Inherit ALL previsita data from last visit
+  if(last && last.previsita){
+    // Obra civil, mecánica, eléctrica — fechas contractuales y % actuales
     ['civil','mecanica','electrica'].forEach(sec=>{
       v.previsita[sec].forEach(row=>{
-        const prev = last.previsita[sec].find(r=>r.id===row.id);
-        if(prev){ row.inicioContractual=prev.inicioContractual||''; row.finalContractual=prev.finalContractual||''; row.pctContractual=prev.pctContractual||''; row.pctActual=prev.pctActual||''; }
+        const prev = (last.previsita[sec]||[]).find(r=>r.id===row.id);
+        if(prev){
+          row.inicioContractual = prev.inicioContractual||'';
+          row.finalContractual  = prev.finalContractual||'';
+          row.pctContractual    = prev.pctContractual||'';
+          row.pctActual         = prev.pctActual||'';
+        }
       });
+    });
+    // Equipos previsita — subcontratista y maquinaria se heredan
+    v.previsita.equipos.forEach(row=>{
+      const prev = (last.previsita.equipos||[]).find(r=>r.id===row.id);
+      if(prev){
+        row.subcontratista = prev.subcontratista||'';
+        row.maquinaria     = prev.maquinaria||'';
+        row.numPersonas    = prev.numPersonas||'';
+      }
+    });
+    // Compras — % compra, % entrega y fecha estimada se heredan
+    v.previsita.compras.forEach(row=>{
+      const prev = (last.previsita.compras||[]).find(r=>r.id===row.id);
+      if(prev){
+        row.comprasPct     = prev.comprasPct||'';
+        row.entregaPct     = prev.entregaPct||'';
+        row.fechaEstimada  = prev.fechaEstimada||'';
+      }
     });
   }
   await dbPut('visitas', v);
